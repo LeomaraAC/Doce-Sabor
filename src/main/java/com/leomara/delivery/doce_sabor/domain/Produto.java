@@ -1,15 +1,32 @@
 package com.leomara.delivery.doce_sabor.domain;
 
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
+@Entity
 public class Produto {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String nome;
     private Double valor;
 
+    @ManyToOne
+    @JoinColumn(name = "empresa_id")
     private Empresa empresa;
+
+    @ManyToOne
+    @JoinColumn(name = "categoria_id")
     private Categoria categoria;
+
+    @OneToMany(mappedBy = "id.produto")
+    private List<Classificacao> classificacaos = new ArrayList<>();
+
+    @OneToMany(mappedBy = "id.produto")
+    private List<ItensPedido> itensPedidos = new ArrayList<>();
 
     public Produto() {}
 
@@ -59,6 +76,22 @@ public class Produto {
 
     public void setCategoria(Categoria categoria) {
         this.categoria = categoria;
+    }
+
+    public List<Classificacao> getClassificacaos() {
+        return classificacaos;
+    }
+
+    public void setClassificacaos(List<Classificacao> classificacaos) {
+        this.classificacaos = classificacaos;
+    }
+
+    public List<ItensPedido> getItensPedidos() {
+        return itensPedidos;
+    }
+
+    public void setItensPedidos(List<ItensPedido> itensPedidos) {
+        this.itensPedidos = itensPedidos;
     }
 
     @Override

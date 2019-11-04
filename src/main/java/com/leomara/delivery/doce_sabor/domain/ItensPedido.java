@@ -1,10 +1,16 @@
 package com.leomara.delivery.doce_sabor.domain;
 
+import com.leomara.delivery.doce_sabor.domain.PK.ItensPedidoPK;
+
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
 import java.util.Objects;
 
+@Entity
 public class ItensPedido {
-    private Produto produto;
-    private Pedido pedido;
+
+    @EmbeddedId
+    private ItensPedidoPK id;
     private Integer qtde;
     private Double desconto;
     private Double valor;
@@ -12,27 +18,27 @@ public class ItensPedido {
     public ItensPedido() {}
 
     public ItensPedido(Produto produto, Pedido pedido, Integer qtde, Double desconto, Double valor) {
-        this.produto = produto;
-        this.pedido = pedido;
+        this.id.setProduto(produto);
+        this.id.setPedido(pedido);
         this.qtde = qtde;
         this.desconto = desconto;
         this.valor = valor;
     }
 
     public Produto getProduto() {
-        return produto;
-    }
-
-    public void setProduto(Produto produto) {
-        this.produto = produto;
+        return id.getProduto();
     }
 
     public Pedido getPedido() {
-        return pedido;
+        return id.getPedido();
     }
 
-    public void setPedido(Pedido pedido) {
-        this.pedido = pedido;
+    public ItensPedidoPK getId() {
+        return id;
+    }
+
+    public void setId(ItensPedidoPK id) {
+        this.id = id;
     }
 
     public Integer getQtde() {
@@ -64,12 +70,11 @@ public class ItensPedido {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ItensPedido that = (ItensPedido) o;
-        return produto.equals(that.produto) &&
-                pedido.equals(that.pedido);
+        return id.equals(that.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(produto, pedido);
+        return Objects.hash(id);
     }
 }

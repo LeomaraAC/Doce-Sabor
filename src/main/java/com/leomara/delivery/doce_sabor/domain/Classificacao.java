@@ -1,36 +1,42 @@
 package com.leomara.delivery.doce_sabor.domain;
 
+import com.leomara.delivery.doce_sabor.domain.PK.ClassificacaoPK;
+
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
 import java.util.Objects;
 
+@Entity
 public class Classificacao {
-    private Cliente cliente;
-    private Produto produto;
+
+    @EmbeddedId
+    private ClassificacaoPK id;
     private Integer nota;
     private String obs;
 
     public Classificacao() {}
 
     public Classificacao(Cliente cliente, Produto produto, Integer nota, String obs) {
-        this.cliente = cliente;
-        this.produto = produto;
+        this.id.setCliente(cliente);
+        this.id.setProduto(produto);
         this.nota = nota;
         this.obs = obs;
     }
 
     public Cliente getCliente() {
-        return cliente;
-    }
-
-    public void setCliente(Cliente cliente) {
-        this.cliente = cliente;
+        return id.getCliente();
     }
 
     public Produto getProduto() {
-        return produto;
+        return id.getProduto();
     }
 
-    public void setProduto(Produto produto) {
-        this.produto = produto;
+    public ClassificacaoPK getId() {
+        return id;
+    }
+
+    public void setId(ClassificacaoPK id) {
+        this.id = id;
     }
 
     public Integer getNota() {
@@ -54,12 +60,11 @@ public class Classificacao {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Classificacao that = (Classificacao) o;
-        return cliente.equals(that.cliente) &&
-                produto.equals(that.produto);
+        return id.equals(that.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(cliente, produto);
+        return Objects.hash(id);
     }
 }

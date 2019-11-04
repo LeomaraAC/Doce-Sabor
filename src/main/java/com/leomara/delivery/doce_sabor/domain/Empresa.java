@@ -1,14 +1,23 @@
 package com.leomara.delivery.doce_sabor.domain;
 
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
+@Entity
 public class Empresa {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String nome_fantasia;
     private String cnpj;
     private String email;
     private String senha;
+
+    @OneToMany(mappedBy = "empresa")
+    private List<Produto> produtos = new ArrayList<>();
 
     public Empresa() {}
 
@@ -58,6 +67,14 @@ public class Empresa {
 
     public void setSenha(String senha) {
         this.senha = senha;
+    }
+
+    public List<Produto> getProdutos() {
+        return produtos;
+    }
+
+    public void setProdutos(List<Produto> produtos) {
+        this.produtos = produtos;
     }
 
     @Override
