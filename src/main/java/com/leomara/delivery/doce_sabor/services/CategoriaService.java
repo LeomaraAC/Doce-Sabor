@@ -22,13 +22,15 @@ public class CategoriaService {
     }
 
     public void delete(int catId) {
-        Optional<Categoria> obj = repo.findById(catId);
-        if (!obj.isPresent())
-            throw new CategoriaException("Categoria não encontrada. ID: " + catId);
-        Categoria cat = obj.get();
+        Categoria cat = find(catId);
         if (cat.getProdutos().size() > 0)
             throw new CategoriaException("Não é possível excluir uma categoria que possui produtos.");
         repo.deleteById(catId);
 
+    }
+
+    public Categoria find(int catId) {
+        Optional<Categoria> obj = repo.findById(catId);
+        return obj.orElseThrow(() -> new CategoriaException("Categoria não encontrada. ID: " + catId));
     }
 }
