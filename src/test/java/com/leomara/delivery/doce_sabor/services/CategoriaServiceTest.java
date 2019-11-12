@@ -17,10 +17,9 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.util.Arrays;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
@@ -94,6 +93,25 @@ public class CategoriaServiceTest {
         categoria.setProdutos(Arrays.asList(p1, p2));
         exception = assertThrows(CategoriaException.class, () -> sut.delete(CAT_ID));
         assertEquals("Não é possível excluir uma categoria que possui produtos.", exception.getMessage());
+    }
+
+    /** Método find*/
+
+    @Test
+    public void deve_buscar_uma_categoria_pelo_id() {
+        Categoria cat = sut.find(CAT_ID);
+        verify(repository).findById(CAT_ID);
+
+        assertAll("Deve retornar uma categoria",
+                    () -> assertEquals(CAT_ID, cat.getId()),
+                    () -> assertEquals(CAT_NOME, cat.getNome()));
+    }
+
+    @Test
+    public void deve_retornar_excecao_ao_nao_encontrar_categoria() {
+        when(repository.findById(CAT_ID)).thenReturn(Optional.empty());
+        exception = assertThrows(CategoriaException.class, () -> sut.find(CAT_ID));
+        assertEquals("Categoria não encontrada. ID: " + CAT_ID, exception.getMessage());
     }
 
 }
