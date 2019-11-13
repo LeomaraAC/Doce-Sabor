@@ -11,6 +11,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -37,12 +41,21 @@ public class CategoriaServiceTest {
     private Categoria categoria;
     private Produto p1;
     private Produto p2;
+    private Page<Categoria> page;
 
     private static final String CAT_NOME = "Categoria 1";
     private static final int CAT_ID = 1;
     private static final String PRODUTO_1 = "Produto 1";
     private static final String PRODUTO_2 = "Produto 2";
     private static final String MENSAGEM_CATEGORIA_NÃO_ENCONTRADA = "Categoria não encontrada. ID: " + CAT_ID;
+
+    //Paginação
+    private static final Integer PAGE = 0;
+    private static final Integer LINES_PER_PAGE = 10;
+    private static final String ORDER_BY = "nome";
+    private static final String  DIRECTION = "ASC";
+    private static final PageRequest PAGE_REQUEST = PageRequest.of(PAGE, LINES_PER_PAGE,
+                                                                    Sort.Direction.valueOf(DIRECTION), ORDER_BY);
 
     @BeforeEach
     public void setUp() {
@@ -55,8 +68,11 @@ public class CategoriaServiceTest {
         p2 = new Produto();
         p2.setNome(PRODUTO_2);
 
+        page = new PageImpl<>(Arrays.asList(categoria, categoriaAux));
+
         when(repository.findById(CAT_ID)).thenReturn(Optional.of(categoria));
         when(repository.save(categoria)).thenReturn(categoriaAux);
+        when(repository.findAll(PAGE_REQUEST)).thenReturn(page);
     }
 
     /** Método Insert*/
@@ -128,6 +144,7 @@ public class CategoriaServiceTest {
     }
 
     /** Método update*/
+
     @Test
     public void deve_atualizar_categoria_com_sucesso() {
         Categoria cat = sut.update(categoria);
@@ -145,4 +162,18 @@ public class CategoriaServiceTest {
         assertEquals(MENSAGEM_CATEGORIA_NÃO_ENCONTRADA, exception.getMessage());
     }
 
+    /** Método findPage*/
+
+    @Test
+    public void deve_chamar_metodo_find_all_do_repositorio() {
+        sut.findPage(PAGE, LINES_PER_PAGE, ORDER_BY, DIRECTION);
+        verify(repository).findAll(PAGE_REQUEST);
+    }
+
+    @Test
+    public void deve_retornar_objeto_tipo_page() {
+        Page<Categoria> catPage = sut.findPage(PAGE, LINES_PER_PAGE, ORDER_BY, DIRECTION);
+        verify(repository).findAll(PAGE_REQUEST);
+        assertEquals(page.getContent().size(), catPage.getContent().size());
+    }
 }
