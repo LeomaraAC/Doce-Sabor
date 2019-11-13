@@ -42,7 +42,7 @@ public class CategoriaServiceTest {
     private static final int CAT_ID = 1;
     private static final String PRODUTO_1 = "Produto 1";
     private static final String PRODUTO_2 = "Produto 2";
-
+    private static final String MENSAGEM_CATEGORIA_NÃO_ENCONTRADA = "Categoria não encontrada. ID: " + CAT_ID;
 
     @BeforeEach
     public void setUp() {
@@ -55,6 +55,7 @@ public class CategoriaServiceTest {
         p2.setNome(PRODUTO_2);
 
         when(repository.findById(CAT_ID)).thenReturn(Optional.of(categoria));
+        when(repository.save(categoria)).thenReturn(categoria);
     }
 
     /** Método Insert*/
@@ -78,7 +79,7 @@ public class CategoriaServiceTest {
     public void nao_deve_deletar_categoria_com_id_inexistente() {
         when(repository.findById(CAT_ID)).thenReturn(Optional.empty());
         exception = assertThrows(CategoriaException.class, () -> sut.delete(CAT_ID));
-        assertEquals("Categoria não encontrada. ID: " + CAT_ID, exception.getMessage());
+        assertEquals(MENSAGEM_CATEGORIA_NÃO_ENCONTRADA, exception.getMessage());
     }
 
     @Test
@@ -111,7 +112,25 @@ public class CategoriaServiceTest {
     public void deve_retornar_excecao_ao_nao_encontrar_categoria() {
         when(repository.findById(CAT_ID)).thenReturn(Optional.empty());
         exception = assertThrows(CategoriaException.class, () -> sut.find(CAT_ID));
-        assertEquals("Categoria não encontrada. ID: " + CAT_ID, exception.getMessage());
+        assertEquals(MENSAGEM_CATEGORIA_NÃO_ENCONTRADA, exception.getMessage());
+    }
+
+    /** Método update*/
+    @Test
+    public void deve_atualizar_categoria_com_sucesso() {
+        Categoria cat = sut.update(categoria);
+
+        verify(repository).save(categoria);
+        assertAll("Deve atualizar uma categoria com sucesso",
+                    () -> assertEquals(CAT_ID, cat.getId()),
+                    () -> assertEquals(CAT_NOME, cat.getNome()));
+    }
+
+    @Test
+    public void nao_deve_atualizar_categoria_id_inexistente() {
+        when(repository.findById(CAT_ID)).thenReturn(Optional.empty());
+        exception = assertThrows(CategoriaException.class, () ->sut.update(categoria));
+        assertEquals(MENSAGEM_CATEGORIA_NÃO_ENCONTRADA, exception.getMessage());
     }
 
 }
