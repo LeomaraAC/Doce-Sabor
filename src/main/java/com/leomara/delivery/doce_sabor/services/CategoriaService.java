@@ -13,12 +13,12 @@ public class CategoriaService {
     @Autowired
     CategoriaRepository repo;
 
-    public void insert(Categoria categoria) {
+    public Categoria insert(Categoria categoria) {
         categoria.setId(null);
         Optional<Categoria> obj = repo.findByNome(categoria.getNome());
         if (obj.isPresent())
             throw new CategoriaException("A categoria " + categoria.getNome() + " já esta cadastrada.");
-        repo.save(categoria);
+        return repo.save(categoria);
     }
 
     public void delete(int catId) {
