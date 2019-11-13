@@ -47,6 +47,7 @@ public class CategoriaServiceTest {
     @BeforeEach
     public void setUp() {
         categoria = new Categoria(CAT_ID, CAT_NOME);
+        Categoria categoriaAux = new Categoria(CAT_ID, CAT_NOME);
 
         p1 = new Produto();
         p1.setNome(PRODUTO_1);
@@ -55,7 +56,7 @@ public class CategoriaServiceTest {
         p2.setNome(PRODUTO_2);
 
         when(repository.findById(CAT_ID)).thenReturn(Optional.of(categoria));
-        when(repository.save(categoria)).thenReturn(categoria);
+        when(repository.save(categoria)).thenReturn(categoriaAux);
     }
 
     /** Método Insert*/
@@ -71,6 +72,17 @@ public class CategoriaServiceTest {
         when(repository.findByNome(CAT_NOME)).thenReturn(Optional.of(categoria));
         exception = assertThrows(CategoriaException.class, () -> sut.insert(categoria));
         assertEquals("A categoria " + CAT_NOME + " já esta cadastrada.", exception.getMessage());
+    }
+
+    @Test
+    public void deve_inserir_categoria_com_sucesso() {
+        categoria.setId(null);
+        Categoria cat = sut.insert(categoria);
+
+        verify(repository).save(categoria);
+        assertAll("Deve inserir uma categoria com sucesso",
+                () -> assertEquals(CAT_ID, cat.getId()),
+                () -> assertEquals(CAT_NOME, cat.getNome()));
     }
 
     /** Método Delete*/
