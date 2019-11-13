@@ -4,6 +4,9 @@ import com.leomara.delivery.doce_sabor.domain.Categoria;
 import com.leomara.delivery.doce_sabor.repositories.CategoriaRepository;
 import com.leomara.delivery.doce_sabor.services.exception.CategoriaException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -37,5 +40,10 @@ public class CategoriaService {
     public Categoria update(Categoria categoria) {
         find(categoria.getId());
         return repo.save(categoria);
+    }
+
+    public Page<Categoria> findPage(Integer page, Integer linesPerPage, String orderBy, String direction) {
+        PageRequest request = PageRequest.of(page,linesPerPage, Sort.Direction.valueOf(direction), orderBy);
+        return repo.findAll(request);
     }
 }
