@@ -39,6 +39,7 @@ public class CategoriaServiceTest {
     private Exception exception;
 
     private Categoria categoria;
+    private Categoria categoriaAux;
     private Produto p1;
     private Produto p2;
     private Page<Categoria> page;
@@ -48,6 +49,7 @@ public class CategoriaServiceTest {
     private static final String PRODUTO_1 = "Produto 1";
     private static final String PRODUTO_2 = "Produto 2";
     private static final String MENSAGEM_CATEGORIA_NÃO_ENCONTRADA = "Categoria não encontrada. ID: " + CAT_ID;
+    private static final String MENSAGEM_CATEGORIA_JA_EXISTENTE = "A categoria " + CAT_NOME + " já esta cadastrada.";
 
     //Paginação
     private static final Integer PAGE = 0;
@@ -60,7 +62,7 @@ public class CategoriaServiceTest {
     @BeforeEach
     public void setUp() {
         categoria = new Categoria(CAT_ID, CAT_NOME);
-        Categoria categoriaAux = new Categoria(CAT_ID, CAT_NOME);
+        categoriaAux = new Categoria(CAT_ID, CAT_NOME);
 
         p1 = new Produto();
         p1.setNome(PRODUTO_1);
@@ -87,7 +89,7 @@ public class CategoriaServiceTest {
     public void nao_deve_salvar_duas_categorias_com_o_mesmo_nome() {
         when(repository.findByNome(CAT_NOME)).thenReturn(Optional.of(categoria));
         exception = assertThrows(CategoriaException.class, () -> sut.insert(categoria));
-        assertEquals("A categoria " + CAT_NOME + " já esta cadastrada.", exception.getMessage());
+        assertEquals(MENSAGEM_CATEGORIA_JA_EXISTENTE, exception.getMessage());
     }
 
     @Test
@@ -160,6 +162,15 @@ public class CategoriaServiceTest {
         when(repository.findById(CAT_ID)).thenReturn(Optional.empty());
         exception = assertThrows(CategoriaException.class, () ->sut.update(categoria));
         assertEquals(MENSAGEM_CATEGORIA_NÃO_ENCONTRADA, exception.getMessage());
+    }
+
+    //NÃO PERMITIR ATUALIZAR UMA CATEGORIA COM O NOME JÁ EXISTENTE
+    @Test
+    public void nao_deve_atualizar_categoria_com_nome_igual_a_de_outra_categoria() {
+        categoriaAux.setId(CAT_ID + 1);
+        when(repository.findByNome(CAT_NOME)).thenReturn(Optional.of(categoriaAux));
+        exception = assertThrows(CategoriaException.class, () -> sut.update(categoria));
+        assertEquals(MENSAGEM_CATEGORIA_JA_EXISTENTE, exception.getMessage());
     }
 
     /** Método findPage*/

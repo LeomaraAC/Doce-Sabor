@@ -39,6 +39,11 @@ public class CategoriaService {
 
     public Categoria update(Categoria categoria) {
         find(categoria.getId());
+        Optional<Categoria> obj = repo.findByNome(categoria.getNome());
+        if (obj.isPresent()){
+            if (!obj.get().equals(categoria))
+                throw new CategoriaException("A categoria " + categoria.getNome() + " já esta cadastrada.");
+        }
         return repo.save(categoria);
     }
 
