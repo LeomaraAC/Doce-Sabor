@@ -26,8 +26,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
-@ExtendWith(SpringExtension.class)
-@TestPropertySource("classpath:application-test.properties")
 public class CategoriaServiceTest {
 
     @MockBean
