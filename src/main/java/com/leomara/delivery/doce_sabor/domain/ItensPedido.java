@@ -12,16 +12,14 @@ public class ItensPedido {
     @EmbeddedId
     private ItensPedidoPK id;
     private Integer qtde;
-    private Double desconto;
     private Double valor;
 
     public ItensPedido() {}
 
-    public ItensPedido(Produto produto, Pedido pedido, Integer qtde, Double desconto, Double valor) {
+    public ItensPedido(Produto produto, Pedido pedido, Integer qtde, Double valor) {
         this.id.setProduto(produto);
         this.id.setPedido(pedido);
         this.qtde = qtde;
-        this.desconto = desconto;
         this.valor = valor;
     }
 
@@ -47,14 +45,6 @@ public class ItensPedido {
 
     public void setQtde(Integer qtde) {
         this.qtde = qtde;
-    }
-
-    public Double getDesconto() {
-        return desconto;
-    }
-
-    public void setDesconto(Double desconto) {
-        this.desconto = desconto;
     }
 
     public Double getValor() {

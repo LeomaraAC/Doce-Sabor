@@ -13,6 +13,7 @@ public class Pedido {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private Date data;
+    private Double desconto;
 
     @ManyToOne
     @JoinColumn(name = "cliente_id")
@@ -43,6 +44,14 @@ public class Pedido {
 
     public void setData(Date data) {
         this.data = data;
+    }
+
+    public Double getDesconto() {
+        return desconto;
+    }
+
+    public void setDesconto(Double desconto) {
+        this.desconto = desconto;
     }
 
     public Cliente getCliente() {
