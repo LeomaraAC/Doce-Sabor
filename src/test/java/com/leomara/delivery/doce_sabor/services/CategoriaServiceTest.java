@@ -5,9 +5,7 @@ import com.leomara.delivery.doce_sabor.domain.Produto;
 import com.leomara.delivery.doce_sabor.repositories.CategoriaRepository;
 import com.leomara.delivery.doce_sabor.services.exception.CategoriaException;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -15,10 +13,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -48,6 +45,7 @@ public class CategoriaServiceTest {
     private static final String PRODUTO_2 = "Produto 2";
     private static final String MENSAGEM_CATEGORIA_NÃO_ENCONTRADA = "Categoria não encontrada. ID: " + CAT_ID;
     private static final String MENSAGEM_CATEGORIA_JA_EXISTENTE = "A categoria " + CAT_NOME + " já esta cadastrada.";
+    private static final String FILTER = "x";
 
     //Paginação
     private static final Integer PAGE = 0;
@@ -72,7 +70,7 @@ public class CategoriaServiceTest {
 
         when(repository.findById(CAT_ID)).thenReturn(Optional.of(categoria));
         when(repository.save(categoria)).thenReturn(categoriaAux);
-        when(repository.findAll(PAGE_REQUEST)).thenReturn(page);
+        when(repository.filter(" ", PAGE_REQUEST)).thenReturn(page);
     }
 
     /** Método Insert*/
@@ -162,7 +160,6 @@ public class CategoriaServiceTest {
         assertEquals(MENSAGEM_CATEGORIA_NÃO_ENCONTRADA, exception.getMessage());
     }
 
-    //NÃO PERMITIR ATUALIZAR UMA CATEGORIA COM O NOME JÁ EXISTENTE
     @Test
     public void nao_deve_atualizar_categoria_com_nome_igual_a_de_outra_categoria() {
         categoriaAux.setId(CAT_ID + 1);
@@ -171,18 +168,26 @@ public class CategoriaServiceTest {
         assertEquals(MENSAGEM_CATEGORIA_JA_EXISTENTE, exception.getMessage());
     }
 
-    /** Método findPage*/
+    /** Método findPage com filtro*/
 
     @Test
-    public void deve_chamar_metodo_find_all_do_repositorio() {
-        sut.findPage(PAGE, LINES_PER_PAGE, ORDER_BY, DIRECTION);
-        verify(repository).findAll(PAGE_REQUEST);
+    public void deve_chamar_metodo_filter_do_repositorio() {
+        sut.findPage(PAGE, LINES_PER_PAGE, ORDER_BY, DIRECTION, "");
+        verify(repository).filter("", PAGE_REQUEST);
     }
 
     @Test
-    public void deve_retornar_objeto_tipo_page() {
-        Page<Categoria> catPage = sut.findPage(PAGE, LINES_PER_PAGE, ORDER_BY, DIRECTION);
-        verify(repository).findAll(PAGE_REQUEST);
-        assertEquals(page.getContent().size(), catPage.getContent().size());
+    public void deve_retornar_objeto_tipo_page_filtrado() {
+        categoriaAux = new Categoria(CAT_ID, CAT_NOME + " Aux");
+        page = new PageImpl<>(Arrays.asList(categoriaAux));
+        when(repository.filter(FILTER, PAGE_REQUEST)).thenReturn(page);
+
+        Page<Categoria> catPage = sut.findPage(PAGE, LINES_PER_PAGE, ORDER_BY, DIRECTION, FILTER);
+        verify(repository).filter(FILTER, PAGE_REQUEST);
+        Categoria cat = catPage.getContent().get(0);
+        assertAll("Deve retornar categoria auxiliar.",
+                    () -> assertEquals(page.getContent().size(), catPage.getContent().size()),
+                    () -> assertEquals(categoriaAux.getNome(), cat.getNome()),
+                    () -> assertEquals(categoriaAux.getId(), cat.getId()));
     }
 }

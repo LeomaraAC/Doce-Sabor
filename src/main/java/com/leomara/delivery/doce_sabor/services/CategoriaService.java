@@ -47,8 +47,8 @@ public class CategoriaService {
         return repo.save(categoria);
     }
 
-    public Page<Categoria> findPage(Integer page, Integer linesPerPage, String orderBy, String direction) {
+    public Page<Categoria> findPage(Integer page, Integer linesPerPage, String orderBy, String direction, String filterNome) {
         PageRequest request = PageRequest.of(page,linesPerPage, Sort.Direction.valueOf(direction), orderBy);
-        return repo.findAll(request);
+        return repo.filter(filterNome, request);
     }
 }
