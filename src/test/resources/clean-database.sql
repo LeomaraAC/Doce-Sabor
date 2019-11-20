@@ -1,0 +1,9 @@
+DELETE FROM telefone;
+DELETE FROM classificacao;
+DELETE FROM itens_pedido;
+DELETE FROM produto;
+DELETE FROM pedido;
+DELETE FROM endereco;
+DELETE FROM empresa;
+DELETE FROM cliente;
+DELETE FROM categoria;
