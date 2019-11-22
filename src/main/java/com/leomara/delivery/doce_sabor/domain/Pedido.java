@@ -1,12 +1,20 @@
 package com.leomara.delivery.doce_sabor.domain;
 
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@EqualsAndHashCode(of = "id")
 public class Pedido {
 
     @Id
@@ -22,64 +30,9 @@ public class Pedido {
     @OneToMany(mappedBy = "id.pedido")
     private List<ItensPedido> itensPedidos = new ArrayList<>();
 
-    public Pedido() {}
-
     public Pedido(Integer id, Date data, Cliente cliente) {
         this.id = id;
         this.data = data;
         this.cliente = cliente;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Date getData() {
-        return data;
-    }
-
-    public void setData(Date data) {
-        this.data = data;
-    }
-
-    public Double getDesconto() {
-        return desconto;
-    }
-
-    public void setDesconto(Double desconto) {
-        this.desconto = desconto;
-    }
-
-    public Cliente getCliente() {
-        return cliente;
-    }
-
-    public void setCliente(Cliente cliente) {
-        this.cliente = cliente;
-    }
-
-    public List<ItensPedido> getItensPedidos() {
-        return itensPedidos;
-    }
-
-    public void setItensPedidos(List<ItensPedido> itensPedidos) {
-        this.itensPedidos = itensPedidos;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Pedido pedido = (Pedido) o;
-        return id.equals(pedido.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
     }
 }
