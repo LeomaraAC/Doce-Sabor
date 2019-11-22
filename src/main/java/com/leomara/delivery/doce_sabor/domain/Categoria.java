@@ -10,7 +10,6 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 @EqualsAndHashCode(of = "id")
 public class Categoria {
 
@@ -21,4 +20,9 @@ public class Categoria {
 
     @OneToMany(mappedBy = "categoria")
     private List<Produto> produtos = new ArrayList<>();
+
+    public Categoria(Integer id, String nome) {
+        this.id = id;
+        this.nome = nome;
+    }
 }

@@ -14,7 +14,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Optional;
 
@@ -57,8 +56,8 @@ public class CategoriaServiceTest {
 
     @BeforeEach
     public void setUp() {
-        categoria = new Categoria(CAT_ID, CAT_NOME, new ArrayList<>());
-        categoriaAux = new Categoria(CAT_ID, CAT_NOME, new ArrayList<>());
+        categoria = new Categoria(CAT_ID, CAT_NOME);
+        categoriaAux = new Categoria(CAT_ID, CAT_NOME);
 
         p1 = new Produto();
         p1.setNome(PRODUTO_1);
@@ -177,7 +176,7 @@ public class CategoriaServiceTest {
 
     @Test
     public void deve_retornar_objeto_tipo_page_filtrado() {
-        categoriaAux = new Categoria(CAT_ID, CAT_NOME + " Aux", new ArrayList<>());
+        categoriaAux = new Categoria(CAT_ID, CAT_NOME + " Aux");
         page = new PageImpl<>(Arrays.asList(categoriaAux));
         when(repository.filter(FILTER, PAGE_REQUEST)).thenReturn(page);
 
