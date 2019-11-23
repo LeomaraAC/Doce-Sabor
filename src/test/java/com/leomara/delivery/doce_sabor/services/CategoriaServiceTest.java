@@ -3,7 +3,8 @@ package com.leomara.delivery.doce_sabor.services;
 import com.leomara.delivery.doce_sabor.domain.Categoria;
 import com.leomara.delivery.doce_sabor.domain.Produto;
 import com.leomara.delivery.doce_sabor.repositories.CategoriaRepository;
-import com.leomara.delivery.doce_sabor.services.exception.CategoriaException;
+import com.leomara.delivery.doce_sabor.services.exception.DataIntegrityException;
+import com.leomara.delivery.doce_sabor.services.exception.ObjectNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,7 +84,7 @@ public class CategoriaServiceTest {
     @Test
     public void nao_deve_salvar_duas_categorias_com_o_mesmo_nome() {
         when(repository.findByNome(CAT_NOME)).thenReturn(Optional.of(categoria));
-        exception = assertThrows(CategoriaException.class, () -> sut.insert(categoria));
+        exception = assertThrows(DataIntegrityException.class, () -> sut.insert(categoria));
         assertEquals(MENSAGEM_CATEGORIA_JA_EXISTENTE, exception.getMessage());
     }
 
@@ -102,7 +103,7 @@ public class CategoriaServiceTest {
     @Test
     public void nao_deve_deletar_categoria_com_id_inexistente() {
         when(repository.findById(CAT_ID)).thenReturn(Optional.empty());
-        exception = assertThrows(CategoriaException.class, () -> sut.delete(CAT_ID));
+        exception = assertThrows(ObjectNotFoundException.class, () -> sut.delete(CAT_ID));
         assertEquals(MENSAGEM_CATEGORIA_NÃO_ENCONTRADA, exception.getMessage());
     }
 
@@ -116,7 +117,7 @@ public class CategoriaServiceTest {
     @Test
     public void nao_deve_excluir_categoria_com_produtos_associados() {
         categoria.setProdutos(Arrays.asList(p1, p2));
-        exception = assertThrows(CategoriaException.class, () -> sut.delete(CAT_ID));
+        exception = assertThrows(DataIntegrityException.class, () -> sut.delete(CAT_ID));
         assertEquals("Não é possível excluir uma categoria que possui produtos.", exception.getMessage());
     }
 
@@ -135,7 +136,7 @@ public class CategoriaServiceTest {
     @Test
     public void deve_retornar_excecao_ao_nao_encontrar_categoria() {
         when(repository.findById(CAT_ID)).thenReturn(Optional.empty());
-        exception = assertThrows(CategoriaException.class, () -> sut.find(CAT_ID));
+        exception = assertThrows(ObjectNotFoundException.class, () -> sut.find(CAT_ID));
         assertEquals(MENSAGEM_CATEGORIA_NÃO_ENCONTRADA, exception.getMessage());
     }
 
@@ -154,7 +155,7 @@ public class CategoriaServiceTest {
     @Test
     public void nao_deve_atualizar_categoria_id_inexistente() {
         when(repository.findById(CAT_ID)).thenReturn(Optional.empty());
-        exception = assertThrows(CategoriaException.class, () ->sut.update(categoria));
+        exception = assertThrows(ObjectNotFoundException.class, () ->sut.update(categoria));
         assertEquals(MENSAGEM_CATEGORIA_NÃO_ENCONTRADA, exception.getMessage());
     }
 
@@ -162,7 +163,7 @@ public class CategoriaServiceTest {
     public void nao_deve_atualizar_categoria_com_nome_igual_a_de_outra_categoria() {
         categoriaAux.setId(CAT_ID + 1);
         when(repository.findByNome(CAT_NOME)).thenReturn(Optional.of(categoriaAux));
-        exception = assertThrows(CategoriaException.class, () -> sut.update(categoria));
+        exception = assertThrows(DataIntegrityException.class, () -> sut.update(categoria));
         assertEquals(MENSAGEM_CATEGORIA_JA_EXISTENTE, exception.getMessage());
     }
 
