@@ -22,4 +22,10 @@ public class CategoriaResource {
         return ResponseEntity.ok(obj);
     }
 
+    @PostMapping
+    public ResponseEntity<Categoria> insert(@RequestBody Categoria categoria) {
+        categoria = service.insert(categoria);
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(categoria.getId()).toUri();
+        return ResponseEntity.created(uri).body(categoria);
+    }
 }
