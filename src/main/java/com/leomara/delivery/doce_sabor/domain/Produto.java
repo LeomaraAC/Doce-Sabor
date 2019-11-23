@@ -1,5 +1,6 @@
 package com.leomara.delivery.doce_sabor.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,17 +23,21 @@ public class Produto {
     private String nome;
     private Double valor;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "empresa_id")
     private Empresa empresa;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "categoria_id")
     private Categoria categoria;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "id.produto")
     private List<Classificacao> classificacaos = new ArrayList<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "id.produto")
     private List<ItensPedido> itensPedidos = new ArrayList<>();
 
