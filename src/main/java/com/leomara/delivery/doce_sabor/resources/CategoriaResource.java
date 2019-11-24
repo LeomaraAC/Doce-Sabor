@@ -31,4 +31,11 @@ public class CategoriaResource {
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(categoria.getId()).toUri();
         return ResponseEntity.created(uri).body(categoria);
     }
+
+    @PutMapping
+    public ResponseEntity<Categoria> update (@Valid @RequestBody CategoriaDTO obj) {
+        Categoria categoria = service.fromDTO(obj);
+        categoria = service.update(categoria);
+        return ResponseEntity.ok(categoria);
+    }
 }

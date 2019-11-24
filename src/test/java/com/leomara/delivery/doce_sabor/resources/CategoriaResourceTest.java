@@ -2,7 +2,6 @@ package com.leomara.delivery.doce_sabor.resources;
 
 
 import com.google.gson.Gson;
-import com.leomara.delivery.doce_sabor.domain.Categoria;
 import com.leomara.delivery.doce_sabor.dto.CategoriaDTO;
 import com.leomara.delivery.doce_sabor.resources.config.ConfigurationResourceTests;
 import io.restassured.http.ContentType;
@@ -114,9 +113,9 @@ public class CategoriaResourceTest extends ConfigurationResourceTests {
                 .request()
                 .contentType(ContentType.JSON)
                 .body(gson.toJson(categoria))
-                .when()
+        .when()
                 .post("/categorias")
-                .then()
+        .then()
                 .log().body().and()
                 .statusCode(HttpStatus.BAD_REQUEST.value())
                 .body("status", equalTo(HttpStatus.BAD_REQUEST.value()),
@@ -132,9 +131,9 @@ public class CategoriaResourceTest extends ConfigurationResourceTests {
                 .request()
                 .contentType(ContentType.JSON)
                 .body(gson.toJson(categoria))
-                .when()
+        .when()
                 .post("/categorias")
-                .then()
+        .then()
                 .log().body().and()
                 .statusCode(HttpStatus.BAD_REQUEST.value())
                 .body("status", equalTo(HttpStatus.BAD_REQUEST.value()),
@@ -150,9 +149,9 @@ public class CategoriaResourceTest extends ConfigurationResourceTests {
                 .request()
                 .contentType(ContentType.JSON)
                 .body(gson.toJson(categoria))
-                .when()
+        .when()
                 .post("/categorias")
-                .then()
+        .then()
                 .log().body().and()
                 .statusCode(HttpStatus.BAD_REQUEST.value())
                 .body("status", equalTo(HttpStatus.BAD_REQUEST.value()),
@@ -168,9 +167,9 @@ public class CategoriaResourceTest extends ConfigurationResourceTests {
                 .request()
                 .contentType(ContentType.JSON)
                 .body(gson.toJson(categoria))
-                .when()
+        .when()
                 .post("/categorias")
-                .then()
+        .then()
                 .log().body().and()
                 .statusCode(HttpStatus.BAD_REQUEST.value())
                 .body("status", equalTo(HttpStatus.BAD_REQUEST.value()),
@@ -199,5 +198,110 @@ public class CategoriaResourceTest extends ConfigurationResourceTests {
                 .body("id", equalTo(5),
                         "nome",equalTo("Comidas nordestina"),
                         "produtos.nome", is(empty()));
+    }
+
+    /** Update */
+    @Test
+    public void deve_atualizar_com_sucesso_uma_categoria() {
+        categoria.setId(3);
+        given()
+                .request()
+                .contentType(ContentType.JSON)
+                .body(gson.toJson(categoria))
+        .when()
+                .put("/categorias")
+        .then()
+                .log().body().and()
+                .statusCode(HttpStatus.OK.value())
+                .body("id", equalTo(3),
+                        "nome", equalTo("Comidas nordestina"),
+                        "produtos.nome", containsInAnyOrder("Pão de cebola", "Pão de alho"));
+    }
+
+    @Test
+    public void deve_retornar_erro_ao_tentar_atualizar_categoria_com_nome_ja_existente() {
+        categoria.setId(3);
+        categoria.setNome("Salgados");
+        given()
+                .request()
+                .contentType(ContentType.JSON)
+                .body(gson.toJson(categoria))
+        .when()
+                .put("/categorias")
+        .then()
+                .log().body().and()
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .body("status", equalTo(HttpStatus.BAD_REQUEST.value()),
+                        "message", equalTo("A categoria Salgados já esta cadastrada."));
+    }
+
+    @Test
+    public void deve_retornar_erro_ao_atualizar_com_nome_vazio() {
+        categoria.setId(3);
+        categoria.setNome("");
+        given()
+                .request()
+                .contentType(ContentType.JSON)
+                .body(gson.toJson(categoria))
+        .when()
+                .put("/categorias")
+        .then()
+                .log().body().and()
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .body("status", equalTo(HttpStatus.BAD_REQUEST.value()),
+                        "message", equalTo("Erro na validação dos dados."),
+                        "errors.field", hasItems("nome"),
+                        "errors.message", hasItems("Preenchimento obrigatório."));
+    }
+
+    @Test
+    public void deve_retornar_erro_ao_atualizar_com_nome_menor_que_tres_caracteres() {
+        categoria.setId(3);
+        categoria.setNome("ab");
+        given()
+                .request()
+                .contentType(ContentType.JSON)
+                .body(gson.toJson(categoria))
+        .when()
+                .put("/categorias")
+        .then()
+                .log().body().and()
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .body("status", equalTo(HttpStatus.BAD_REQUEST.value()),
+                        "message", equalTo("Erro na validação dos dados."),
+                        "errors.field", containsInAnyOrder("nome"),
+                        "errors.message", containsInAnyOrder("O tamanho deve ser entre 3 e 50 caracteres."));
+    }
+
+    @Test
+    public void deve_retornar_erro_ao_tentar_atualizar_categoria_com_id_inexistente(){
+        categoria.setId(0);
+        given()
+                .request()
+                .contentType(ContentType.JSON)
+                .body(gson.toJson(categoria))
+        .when()
+                .put("/categorias")
+        .then()
+                .log().body().and()
+                .statusCode(HttpStatus.NOT_FOUND.value())
+                .body("status", equalTo(HttpStatus.NOT_FOUND.value()),
+                        "message", equalTo("Categoria não encontrada. ID: 0"));
+    }
+
+    @Test
+    public void deve_retornar_erro_ao_tentar_atualizar_categoria_com_id_nulo(){
+        categoria.setId(null);
+        given()
+                .request()
+                .contentType(ContentType.JSON)
+                .body(gson.toJson(categoria))
+        .when()
+                .put("/categorias")
+        .then()
+                .log().body().and()
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .body("status", equalTo(HttpStatus.BAD_REQUEST.value()),
+                        "message", equalTo("O campo id é obrigatório."));
     }
 }
