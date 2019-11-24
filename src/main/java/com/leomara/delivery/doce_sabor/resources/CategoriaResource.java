@@ -1,12 +1,14 @@
 package com.leomara.delivery.doce_sabor.resources;
 
 import com.leomara.delivery.doce_sabor.domain.Categoria;
+import com.leomara.delivery.doce_sabor.dto.CategoriaDTO;
 import com.leomara.delivery.doce_sabor.services.CategoriaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.validation.Valid;
 import java.net.URI;
 
 @RestController
@@ -23,7 +25,8 @@ public class CategoriaResource {
     }
 
     @PostMapping
-    public ResponseEntity<Categoria> insert(@RequestBody Categoria categoria) {
+    public ResponseEntity<Categoria> insert(@Valid @RequestBody CategoriaDTO obj) {
+        Categoria categoria = service.fromDTO(obj);
         categoria = service.insert(categoria);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(categoria.getId()).toUri();
         return ResponseEntity.created(uri).body(categoria);

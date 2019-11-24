@@ -2,6 +2,7 @@ package com.leomara.delivery.doce_sabor.services;
 
 import com.leomara.delivery.doce_sabor.domain.Categoria;
 import com.leomara.delivery.doce_sabor.domain.Produto;
+import com.leomara.delivery.doce_sabor.dto.CategoriaDTO;
 import com.leomara.delivery.doce_sabor.repositories.CategoriaRepository;
 import com.leomara.delivery.doce_sabor.services.exception.DataIntegrityException;
 import com.leomara.delivery.doce_sabor.services.exception.ObjectNotFoundException;
@@ -188,5 +189,16 @@ public class CategoriaServiceTest {
                     () -> assertEquals(page.getContent().size(), catPage.getContent().size()),
                     () -> assertEquals(categoriaAux.getNome(), cat.getNome()),
                     () -> assertEquals(categoriaAux.getId(), cat.getId()));
+    }
+
+    /** Método fromDTO */
+    @Test
+    public void deve_retornar_uma_classe_categoria() {
+        CategoriaDTO objDTO = new CategoriaDTO(CAT_ID, CAT_NOME);
+        Categoria cat = sut.fromDTO(objDTO);
+
+        assertAll("Deve retornar um objeto Categoria",
+                    () -> assertEquals(cat.getId(), objDTO.getId()),
+                    () -> assertEquals(cat.getNome(),objDTO.getNome()));
     }
 }
