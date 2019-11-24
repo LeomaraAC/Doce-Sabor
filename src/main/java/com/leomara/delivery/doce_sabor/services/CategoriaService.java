@@ -40,6 +40,8 @@ public class CategoriaService {
     }
 
     public Categoria update(Categoria categoria) {
+        if (categoria.getId() == null)
+            throw new DataIntegrityException("O campo id é obrigatório.");
         find(categoria.getId());
         Optional<Categoria> obj = repo.findByNome(categoria.getNome());
         if (obj.isPresent()){
