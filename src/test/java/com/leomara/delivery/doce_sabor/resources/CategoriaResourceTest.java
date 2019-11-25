@@ -275,7 +275,7 @@ public class CategoriaResourceTest extends ConfigurationResourceTests {
 
     @Test
     public void deve_retornar_erro_ao_tentar_atualizar_categoria_com_id_inexistente(){
-        categoria.setId(0);
+        categoria.setId(100);
         given()
                 .request()
                 .contentType(ContentType.JSON)
@@ -286,7 +286,7 @@ public class CategoriaResourceTest extends ConfigurationResourceTests {
                 .log().body().and()
                 .statusCode(HttpStatus.NOT_FOUND.value())
                 .body("status", equalTo(HttpStatus.NOT_FOUND.value()),
-                        "message", equalTo("Categoria não encontrada. ID: 0"));
+                        "message", equalTo("Categoria não encontrada. ID: 100"));
     }
 
     @Test
@@ -303,5 +303,42 @@ public class CategoriaResourceTest extends ConfigurationResourceTests {
                 .statusCode(HttpStatus.BAD_REQUEST.value())
                 .body("status", equalTo(HttpStatus.BAD_REQUEST.value()),
                         "message", equalTo("O campo id é obrigatório."));
+    }
+
+    /** Delete */
+    @Test
+    public void deve_deletar_uma_categoria_com_sucesso() {
+        given()
+                .pathParam("id", 0)
+        .when()
+                .delete("/categorias/{id}")
+        .then()
+                .statusCode(HttpStatus.NO_CONTENT.value());
+    }
+
+    @Test
+    public void deve_retornar_erro_ao_excluir_categoria_com_produtos() {
+        given()
+                .pathParam("id", 2)
+        .when()
+                .delete("/categorias/{id}")
+        .then()
+                .log().body()
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .body("status", equalTo(HttpStatus.BAD_REQUEST.value()),
+                        "message", equalTo("Não é possível excluir uma categoria que possui produtos."));
+    }
+    
+    @Test
+    public void deve_retornar_erro_ao_excluir_categoria_inexistente() {
+        given()
+                .pathParam("id", 10)
+        .when()
+                .delete("/categorias/{id}")
+        .then()
+                .log().body()
+                .statusCode(HttpStatus.NOT_FOUND.value())
+                .body("status", equalTo(HttpStatus.NOT_FOUND.value()),
+                        "message", equalTo("Categoria não encontrada. ID: 10"));
     }
 }

@@ -1,3 +1,4 @@
+INSERT INTO categoria (id, nome) VALUES(0, 'Comida Vegana');
 INSERT INTO categoria (id, nome) VALUES(1, 'Salgados');
 INSERT INTO categoria (id, nome) VALUES(2, 'Doces');
 INSERT INTO categoria (id, nome) VALUES(3, 'Pães');
