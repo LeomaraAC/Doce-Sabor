@@ -9,8 +9,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
+import static io.restassured.RestAssured.get;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 
 public class CategoriaResourceTest extends ConfigurationResourceTests {
 
@@ -328,7 +330,7 @@ public class CategoriaResourceTest extends ConfigurationResourceTests {
                 .body("status", equalTo(HttpStatus.BAD_REQUEST.value()),
                         "message", equalTo("Não é possível excluir uma categoria que possui produtos."));
     }
-    
+
     @Test
     public void deve_retornar_erro_ao_excluir_categoria_inexistente() {
         given()
@@ -340,5 +342,46 @@ public class CategoriaResourceTest extends ConfigurationResourceTests {
                 .statusCode(HttpStatus.NOT_FOUND.value())
                 .body("status", equalTo(HttpStatus.NOT_FOUND.value()),
                         "message", equalTo("Categoria não encontrada. ID: 10"));
+    }
+
+    /**Busca paginada */
+    @Test
+    public void deve_retornar_todas_as_categorias_paginada() {
+        get("/categorias")
+        .then()
+                .log().body()
+                .statusCode(HttpStatus.OK.value())
+                .body("content.nome", containsInAnyOrder("Comida Vegana", "Salgados", "Pães", "Doces", "Bolos"),
+                        "totalElements", equalTo(5),
+                        "empty", equalTo(false));
+    }
+
+    @Test
+    public void deve_retornar_as_categorias_que_contem_as_letras_os_paginado() {
+        given()
+                .param("nome", "os")
+        .get("/categorias")
+        .then()
+                .log().body()
+                .statusCode(HttpStatus.OK.value())
+                .body("content.nome", containsInAnyOrder("Salgados", "Bolos"),
+                        "totalElements", equalTo(2));
+    }
+
+    @Test
+    public void deve_retornar_a_paginacao_com_3_categorias_por_pagina_ordenado_pelo_id_decrescente_e_na_pagina_2() {
+        given()
+                .param("page", 1)
+                .param("linesPerPage", 3)
+                .param("orderBy", "id")
+                .param("direction", "DESC")
+        .get("/categorias")
+        .then()
+                .log().body()
+                .statusCode(HttpStatus.OK.value())
+                .body("size", equalTo(3),
+                        "number", equalTo(1),
+                        "numberOfElements", equalTo(2),
+                        "content.nome", containsInAnyOrder("Salgados", "Comida Vegana"));
     }
 }

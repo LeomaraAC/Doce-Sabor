@@ -4,6 +4,7 @@ import com.leomara.delivery.doce_sabor.domain.Categoria;
 import com.leomara.delivery.doce_sabor.dto.CategoriaDTO;
 import com.leomara.delivery.doce_sabor.services.CategoriaService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -43,5 +44,16 @@ public class CategoriaResource {
     public ResponseEntity<Void> delete(@PathVariable Integer id) {
         service.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping
+    public ResponseEntity<Page<CategoriaDTO>> findAll( @RequestParam(value = "nome", defaultValue = "") String nome,
+                                                    @RequestParam(value = "page", defaultValue = "0") Integer page,
+                                                    @RequestParam(value = "linesPerPage", defaultValue = "25") Integer linesPerPage,
+                                                    @RequestParam(value = "orderBy", defaultValue = "nome") String orderBy,
+                                                    @RequestParam(value = "direction", defaultValue = "ASC") String direction) {
+        Page<Categoria> categorias = service.findPage(page,linesPerPage, orderBy, direction, nome);
+        Page<CategoriaDTO> listaDTO = categorias.map(obj -> new CategoriaDTO(obj.getId(), obj.getNome()));
+        return ResponseEntity.ok(listaDTO);
     }
 }
