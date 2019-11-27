@@ -43,13 +43,13 @@ public class CategoriaRepositoryTest extends ConfigurationTests {
     @Test
     public void deve_retornar_as_categorias_filtradas_pelo_nome() {
         categorias = sut.filter("e", PAGE_REQUEST);
-        assertEquals(2, categorias.getNumberOfElements());
+        assertEquals(3, categorias.getNumberOfElements());
     }
 
     @Test
     public void deve_retornar_todas_as_categorias() {
         categorias = sut.filter("", PAGE_REQUEST);
-        assertEquals(4, categorias.getNumberOfElements());
+        assertEquals(5, categorias.getNumberOfElements());
 
     }
 
