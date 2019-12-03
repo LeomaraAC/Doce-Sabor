@@ -24,8 +24,8 @@ public class Cliente {
     @CollectionTable(name = "Telefone")
     private Set<String> telefones = new HashSet<>();
 
-    @OneToMany(mappedBy = "cliente")
-    private List<Endereco> enderecos = new ArrayList<>();
+    @OneToOne(mappedBy = "cliente")
+    private Endereco endereco;
 
     @OneToMany(mappedBy = "cliente")
     private List<Pedido> pedidos = new ArrayList<>();
@@ -33,11 +33,12 @@ public class Cliente {
     @OneToMany(mappedBy = "id.cliente")
     private List<Classificacao> classificacaos = new ArrayList<>();
 
-    public Cliente(Integer id, String nome, String cpf, String email, String senha) {
+    public Cliente(Integer id, String nome, String cpf, String email, String senha, Endereco endereco) {
         this.id = id;
         this.nome = nome;
         this.cpf = cpf;
         this.email = email;
         this.senha = senha;
+        this.endereco = endereco;
     }
 }

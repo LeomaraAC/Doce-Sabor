@@ -13,7 +13,6 @@ import javax.persistence.*;
 public class Endereco {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String logradouro;
     private String numero;
@@ -23,7 +22,7 @@ public class Endereco {
     private String cidade;
     private String uf;
 
-    @ManyToOne
-    @JoinColumn(name = "cliente_id")
+    @OneToOne
+    @MapsId
     private Cliente cliente;
 }
