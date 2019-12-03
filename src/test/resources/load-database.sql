@@ -16,14 +16,14 @@ INSERT INTO empresa (id, cnpj, email, nome_fantasia, senha) VALUES(2, '36.112.46
 INSERT INTO empresa (id, cnpj, email, nome_fantasia, senha) VALUES(3, '24.667.907/0001-77', 'contact@doceSabor.com.br', 'Doce Sabor', 'rfq6b2Sc5h');
 
 
-INSERT INTO endereco (id, bairro, cep, cidade, complemento, logradouro, numero, uf, cliente_id)
-            VALUES(1, 'Sítios de Recreio Gramado', '13101-626', 'Campinas', null, 'Alameda das Espatódeas', '459', 'SP', 1);
-INSERT INTO endereco (id, bairro, cep, cidade, complemento, logradouro, numero, uf, cliente_id)
-            VALUES(2, 'Jardim Indianópolis', '13050-214', 'Campinas', null, 'Avenida Tancredo Neves', '564', 'SP', 2);
-INSERT INTO endereco (id, bairro, cep, cidade, complemento, logradouro, numero, uf, cliente_id)
-            VALUES(3, 'Vila Joaquim Inácio', '13045-630', 'Campinas', null, 'Rua José Soriano de Sousa Filho', '533', 'SP', 3);
-INSERT INTO endereco (id, bairro, cep, cidade, complemento, logradouro, numero, uf, cliente_id)
-            VALUES(4, 'Barão Geraldo', '13084-175', 'Campinas', null, 'Rua Manoel Antunes Novo', '972', 'SP', 4);
+INSERT INTO endereco (bairro, cep, cidade, complemento, logradouro, numero, uf, cliente_id)
+            VALUES('Sítios de Recreio Gramado', '13101-626', 'Campinas', null, 'Alameda das Espatódeas', '459', 'SP', 1);
+INSERT INTO endereco (bairro, cep, cidade, complemento, logradouro, numero, uf, cliente_id)
+            VALUES('Jardim Indianópolis', '13050-214', 'Campinas', null, 'Avenida Tancredo Neves', '564', 'SP', 2);
+INSERT INTO endereco (bairro, cep, cidade, complemento, logradouro, numero, uf, cliente_id)
+            VALUES('Vila Joaquim Inácio', '13045-630', 'Campinas', null, 'Rua José Soriano de Sousa Filho', '533', 'SP', 3);
+INSERT INTO endereco (bairro, cep, cidade, complemento, logradouro, numero, uf, cliente_id)
+            VALUES('Barão Geraldo', '13084-175', 'Campinas', null, 'Rua Manoel Antunes Novo', '972', 'SP', 4);
 
 
 INSERT INTO pedido (id, data, desconto, cliente_id) VALUES(1, '2019-01-25', 2.50, 1);
