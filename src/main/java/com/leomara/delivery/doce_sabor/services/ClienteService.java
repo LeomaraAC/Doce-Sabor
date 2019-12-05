@@ -28,11 +28,7 @@ public class ClienteService {
 
     @Transactional
     public Cliente insert(Cliente cliente) {
-        if (cliente.getEndereco() == null)
-            throw new DataIntegrityException("É obrigatório informar um endereço.");
-
-        if (cliente.getTelefones().isEmpty())
-            throw new DataIntegrityException("É obrigatório informar pelo menos um telefone.");
+        verificarEnderecoETelefoneVazio(cliente);
 
         if (repo.findByCpf(cliente.getCpf()).isPresent())
             throw new DataIntegrityException("O CPF " + cliente.getCpf() + " já esta cadastrado.");
@@ -45,5 +41,30 @@ public class ClienteService {
         return cliente;
     }
 
+    private void verificarEnderecoETelefoneVazio(Cliente cliente) {
+        if (cliente.getEndereco() == null)
+            throw new DataIntegrityException("É obrigatório informar um endereço.");
 
+        if (cliente.getTelefones().isEmpty())
+            throw new DataIntegrityException("É obrigatório informar pelo menos um telefone.");
+    }
+
+
+    public Cliente update(Cliente cliente) {
+        verificarEnderecoETelefoneVazio(cliente);
+        find(cliente.getId());
+        Optional<Cliente> objCPF = repo.findByCpf(cliente.getCpf());
+        Optional<Cliente> objEmail = repo.findByEmail(cliente.getEmail());
+        if (objCPF.isPresent()) {
+            if(!objCPF.get().equals(cliente))
+                throw new DataIntegrityException("O CPF " + cliente.getCpf() + " já esta cadastrado.");
+        }
+
+        if (objEmail.isPresent()) {
+            if(!objEmail.get().equals(cliente))
+                throw new DataIntegrityException("O email " + cliente.getEmail() + " já esta cadastrado.");
+        }
+        repoEnd.save(cliente.getEndereco());
+        return repo.save(cliente);
+    }
 }

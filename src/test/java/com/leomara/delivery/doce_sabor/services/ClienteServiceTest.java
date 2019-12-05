@@ -7,6 +7,7 @@ import com.leomara.delivery.doce_sabor.repositories.EnderecoRepository;
 import com.leomara.delivery.doce_sabor.services.exception.DataIntegrityException;
 import com.leomara.delivery.doce_sabor.services.exception.ObjectNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -58,7 +59,8 @@ public class ClienteServiceTest {
 
         clienteAux = new Cliente(ID_CLI, NOME_CLI, CPF_CLI, EMAIL_CLI, SENHA_CLI, null);
 
-        when(repository.findById(1)).thenReturn(Optional.of(cliente));
+        when(repository.findById(ID_CLI)).thenReturn(Optional.of(cliente));
+        when(repository.findById(ID_CLI + 1)).thenReturn(Optional.of(cliente));
         when(repository.save(cliente)).thenReturn(cliente);
         when(repository.findByCpf(CPF_CLI)).thenReturn(Optional.empty());
         when(repository.findByEmail(EMAIL_CLI)).thenReturn(Optional.empty());
@@ -92,14 +94,13 @@ public class ClienteServiceTest {
     }
 
     /** Método insert */
-
     @Test
     public void deve_inserir_um_cliente_com_sucesso() {
+        cliente.setId(null);
         Cliente cl = sut.insert(cliente);
         verify(repository).save(cliente);
         verify(repositoryEndereco).save(endereco);
         assertAll("Deve inserir um cliente com sucesso",
-                    () -> assertEquals(ID_CLI, cl.getId()),
                     () -> assertEquals(CPF_CLI, cl.getCpf()),
                     () -> assertEquals(EMAIL_CLI, cl.getEmail()),
                     () -> assertThat(cl.getTelefones(), containsInAnyOrder(TEL1,TEL2)),
@@ -133,5 +134,52 @@ public class ClienteServiceTest {
         when(repository.findByEmail(EMAIL_CLI)).thenReturn(Optional.of(cliente));
         exception = assertThrows(DataIntegrityException.class, () -> sut.insert(cliente));
         assertEquals("O email " + cliente.getEmail() + " já esta cadastrado.", exception.getMessage());
+    }
+
+    /** Método update */
+    @Test
+    public void deve_atualizar_com_sucesso() {
+        Cliente cl = sut.update(cliente);
+        verify(repository).save(cliente);
+        verify(repositoryEndereco).save(endereco);
+        assertAll("Deve inserir um cliente com sucesso",
+                () -> assertEquals(ID_CLI, cl.getId()),
+                () -> assertEquals(CPF_CLI, cl.getCpf()),
+                () -> assertThat(cl.getTelefones(), containsInAnyOrder(TEL1,TEL2)));
+    }
+    @Test
+    public void deve_retornar_excecao_ao_tentar_atualizar_com_id_inexistente() {
+        when(repository.findById(ID_CLI)).thenReturn(Optional.empty());
+        exception = assertThrows(ObjectNotFoundException.class, () -> sut.update(cliente));
+        assertEquals("Cliente não encontrado. ID: " + ID_CLI, exception.getMessage());
+    }
+
+    @Test
+    public void  deve_retornar_excecao_ao_atualizar_com_cpf_ja_existente() {
+        when(repository.findByCpf(CPF_CLI)).thenReturn(Optional.of(clienteAux));
+        cliente.setId(ID_CLI + 1);
+        exception = assertThrows(DataIntegrityException.class, () -> sut.update(cliente));
+        assertEquals("O CPF " + cliente.getCpf() + " já esta cadastrado.", exception.getMessage());
+    }
+
+    @Test
+    public void deve_retornar_excecao_ao_atualizar_com_email_ja_existente() {
+        when(repository.findByEmail(EMAIL_CLI)).thenReturn(Optional.of(clienteAux));
+        cliente.setId(ID_CLI + 1);
+        exception = assertThrows(DataIntegrityException.class, () -> sut.update(cliente));
+        assertEquals("O email " + cliente.getEmail() + " já esta cadastrado.", exception.getMessage());
+    }
+
+    @Test
+    public void deve_retornar_excecao_ao_tentar_atualizar_sem_endereco() {
+        exception = assertThrows(DataIntegrityException.class, () -> sut.update(clienteAux));
+        assertEquals("É obrigatório informar um endereço.", exception.getMessage());
+    }
+
+    @Test
+    public void deve_retornar_excecao_ao_tentar_atualizar_sem_telefone() {
+        clienteAux.setEndereco(endereco);
+        exception = assertThrows(DataIntegrityException.class, () -> sut.update(clienteAux));
+        assertEquals("É obrigatório informar pelo menos um telefone.", exception.getMessage());
     }
 }
