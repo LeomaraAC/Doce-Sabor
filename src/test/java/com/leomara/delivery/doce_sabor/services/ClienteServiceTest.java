@@ -7,7 +7,6 @@ import com.leomara.delivery.doce_sabor.repositories.EnderecoRepository;
 import com.leomara.delivery.doce_sabor.services.exception.DataIntegrityException;
 import com.leomara.delivery.doce_sabor.services.exception.ObjectNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -28,7 +27,7 @@ public class ClienteServiceTest {
     private static final int ID_CLI = 1;
     private static final String MENSAGEM_CLIENTE_NAO_ENCONTRADO = "Cliente não encontrado. ID: " + ID_CLI;
     private static final String NOME_CLI = "Caio Ramos";
-    private static final String CPF_CLI = "231.794.256-79";
+    private static final String CPF_CLI = "23179425679";
     private static final String EMAIL_CLI = "caiomarcos@roche.com";
     private static final String SENHA_CLI = "123";
     private static final String MENSAGEM_ID_NULO = "Necessário um id para buscar.";
@@ -51,7 +50,7 @@ public class ClienteServiceTest {
 
     @BeforeEach
     void setUp() {
-        endereco = new Endereco(null, "Rua Flores", "300", "Jardim", "Apto 203", "38220834", "Uberlândia", "MG", clienteAux);
+        endereco = new Endereco(null, "Rua Flores", "300", "Jardim", "Apto 203", "38220-834", "Uberlândia", "MG", clienteAux);
 
         cliente = new Cliente(ID_CLI, NOME_CLI, CPF_CLI, EMAIL_CLI, SENHA_CLI, endereco);
         cliente.setEndereco(endereco);
@@ -110,19 +109,6 @@ public class ClienteServiceTest {
     }
 
     @Test
-    public void deve_retornar_excecao_ao_inserir_cliente_sem_endereco() {
-        exception = assertThrows(DataIntegrityException.class, () -> sut.insert(clienteAux));
-        assertEquals("É obrigatório informar um endereço.", exception.getMessage());
-    }
-
-    @Test
-    public void deve_retornar_excecao_ao_inserir_cliente_sem_telefone() {
-        clienteAux.setEndereco(endereco);
-        exception = assertThrows(DataIntegrityException.class, () -> sut.insert(clienteAux));
-        assertEquals("É obrigatório informar pelo menos um telefone.", exception.getMessage());
-    }
-
-    @Test
     public void deve_retornar_excecao_ao_inserir_cliente_com_o_mesmo_cpf() {
         when(repository.findByCpf(CPF_CLI)).thenReturn(Optional.of(cliente));
         exception = assertThrows(DataIntegrityException.class, () -> sut.insert(cliente));
@@ -168,18 +154,5 @@ public class ClienteServiceTest {
         cliente.setId(ID_CLI + 1);
         exception = assertThrows(DataIntegrityException.class, () -> sut.update(cliente));
         assertEquals("O email " + cliente.getEmail() + " já esta cadastrado.", exception.getMessage());
-    }
-
-    @Test
-    public void deve_retornar_excecao_ao_tentar_atualizar_sem_endereco() {
-        exception = assertThrows(DataIntegrityException.class, () -> sut.update(clienteAux));
-        assertEquals("É obrigatório informar um endereço.", exception.getMessage());
-    }
-
-    @Test
-    public void deve_retornar_excecao_ao_tentar_atualizar_sem_telefone() {
-        clienteAux.setEndereco(endereco);
-        exception = assertThrows(DataIntegrityException.class, () -> sut.update(clienteAux));
-        assertEquals("É obrigatório informar pelo menos um telefone.", exception.getMessage());
     }
 }

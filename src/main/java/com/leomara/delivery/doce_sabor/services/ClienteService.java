@@ -1,6 +1,8 @@
 package com.leomara.delivery.doce_sabor.services;
 
 import com.leomara.delivery.doce_sabor.domain.Cliente;
+import com.leomara.delivery.doce_sabor.domain.Endereco;
+import com.leomara.delivery.doce_sabor.dto.ClienteDTO;
 import com.leomara.delivery.doce_sabor.repositories.ClienteRepository;
 import com.leomara.delivery.doce_sabor.repositories.EnderecoRepository;
 import com.leomara.delivery.doce_sabor.services.exception.DataIntegrityException;
@@ -28,8 +30,8 @@ public class ClienteService {
 
     @Transactional
     public Cliente insert(Cliente cliente) {
-        verificarEnderecoETelefoneVazio(cliente);
-
+        cliente.setId(null);
+        cliente.getEndereco().setId(null);
         if (repo.findByCpf(cliente.getCpf()).isPresent())
             throw new DataIntegrityException("O CPF " + cliente.getCpf() + " já esta cadastrado.");
 
@@ -41,17 +43,7 @@ public class ClienteService {
         return cliente;
     }
 
-    private void verificarEnderecoETelefoneVazio(Cliente cliente) {
-        if (cliente.getEndereco() == null)
-            throw new DataIntegrityException("É obrigatório informar um endereço.");
-
-        if (cliente.getTelefones().isEmpty())
-            throw new DataIntegrityException("É obrigatório informar pelo menos um telefone.");
-    }
-
-
     public Cliente update(Cliente cliente) {
-        verificarEnderecoETelefoneVazio(cliente);
         find(cliente.getId());
         Optional<Cliente> objCPF = repo.findByCpf(cliente.getCpf());
         Optional<Cliente> objEmail = repo.findByEmail(cliente.getEmail());
@@ -66,5 +58,18 @@ public class ClienteService {
         }
         repoEnd.save(cliente.getEndereco());
         return repo.save(cliente);
+    }
+
+    public Cliente fromDTO(ClienteDTO objDTO) {
+        System.out.println(objDTO.getLogradouro());
+        Endereco endereco = new Endereco(objDTO.getId(), objDTO.getLogradouro(),objDTO.getNumero(),objDTO.getBairro(),
+                objDTO.getComplemento(), objDTO.getCep(), objDTO.getCidade(), objDTO.getUf(), null);
+
+        Cliente cliente = new Cliente(objDTO.getId(), objDTO.getNome(), objDTO.getCpf(), objDTO.getEmail(),
+                objDTO.getSenha(), endereco);
+        cliente.setTelefones(objDTO.getTelefones());
+        endereco.setCliente(cliente);
+
+        return cliente;
     }
 }
