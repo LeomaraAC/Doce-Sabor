@@ -1,5 +1,6 @@
 package com.leomara.delivery.doce_sabor.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -27,9 +28,11 @@ public class Cliente {
     @OneToOne(mappedBy = "cliente")
     private Endereco endereco;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "cliente")
     private List<Pedido> pedidos = new ArrayList<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "id.cliente")
     private List<Classificacao> classificacaos = new ArrayList<>();
 

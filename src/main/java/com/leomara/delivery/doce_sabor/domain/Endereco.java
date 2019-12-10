@@ -1,5 +1,6 @@
 package com.leomara.delivery.doce_sabor.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -22,6 +23,7 @@ public class Endereco {
     private String cidade;
     private String uf;
 
+    @JsonIgnore
     @OneToOne
     @MapsId
     private Cliente cliente;
