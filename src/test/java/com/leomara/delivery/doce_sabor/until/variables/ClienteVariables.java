@@ -30,5 +30,5 @@ public class ClienteVariables extends Variables {
     public static final String ERRO_TELEFONE_OBRIGATORIO = "É obrigatório informar pelo menos um telefone.";
     public static final String ERRO_CPF_CADASTRADO = "O CPF " + CPF_EXISTENTE + " já esta cadastrado.";
     public static final String ERRO_EMAIL_CADASTRADO = "O email " + EMAIL_EXISTENTE + " já esta cadastrado.";
-    public static final String ERRO_CLIENTE_NAO_ENCONTRADO = "Cliente não encontrado. ID: " + ID_EXISTENTE;
+    public static final String ERRO_CLIENTE_NAO_ENCONTRADO = "Cliente não encontrado. ID: " + ID_INEXISTENTE;
 }

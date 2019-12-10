@@ -18,9 +18,6 @@ public class ClienteService {
     @Autowired
     private ClienteRepository repo;
 
-    @Autowired
-    private EnderecoRepository repoEnd;
-
     public Cliente find(Integer id) {
         if (id == null)
             throw new DataIntegrityException("Necessário um id para buscar.");
@@ -55,12 +52,10 @@ public class ClienteService {
             if(!objEmail.get().equals(cliente))
                 throw new DataIntegrityException("O email " + cliente.getEmail() + " já esta cadastrado.");
         }
-        repoEnd.save(cliente.getEndereco());
         return repo.save(cliente);
     }
 
     public Cliente fromDTO(ClienteDTO objDTO) {
-        System.out.println(objDTO.getLogradouro());
         Endereco endereco = new Endereco(objDTO.getId(), objDTO.getLogradouro(),objDTO.getNumero(),objDTO.getBairro(),
                 objDTO.getComplemento(), objDTO.getCep(), objDTO.getCidade(), objDTO.getUf(), null);
 
@@ -70,5 +65,10 @@ public class ClienteService {
         endereco.setCliente(cliente);
 
         return cliente;
+    }
+
+    public void delete(Integer id) {
+        find(id);
+        repo.deleteById(id);
     }
 }
