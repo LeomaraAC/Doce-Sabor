@@ -6,7 +6,7 @@ import com.leomara.delivery.doce_sabor.repositories.ClienteRepository;
 import com.leomara.delivery.doce_sabor.repositories.EnderecoRepository;
 import com.leomara.delivery.doce_sabor.services.exception.DataIntegrityException;
 import com.leomara.delivery.doce_sabor.services.exception.ObjectNotFoundException;
-import static com.leomara.delivery.doce_sabor.until.Variables.*;
+import static com.leomara.delivery.doce_sabor.until.variables.ClienteVariables.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

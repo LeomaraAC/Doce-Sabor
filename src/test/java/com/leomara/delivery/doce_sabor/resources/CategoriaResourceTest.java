@@ -4,6 +4,7 @@ package com.leomara.delivery.doce_sabor.resources;
 import com.google.gson.Gson;
 import com.leomara.delivery.doce_sabor.dto.CategoriaDTO;
 import com.leomara.delivery.doce_sabor.resources.config.ConfigurationResourceTests;
+import static com.leomara.delivery.doce_sabor.until.variables.CategoriaVariables.*;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,33 +24,33 @@ public class CategoriaResourceTest extends ConfigurationResourceTests {
     void setUp() {
         gson = new Gson();
         categoria = new CategoriaDTO();
-        categoria.setNome("Comidas nordestina");
+        categoria.setNome(NOME_CAT);
     }
 
     /** FindById */
     @Test
     public void deve_buscar_categoria_pelo_id(){
        given()
-               .pathParam("id", 2)
-       .get("/categorias/{id}")
+               .pathParam("id", ID_CAT_EXISTENTE)
+       .get(URN_CATEGORIA_ID)
        .then()
                .log().body().and()
                .statusCode(HttpStatus.OK.value())
-               .body("id", equalTo(2),
-                       "nome", equalTo("Doces"),
-                        "produtos.nome", containsInAnyOrder("Canjica", "Trufas", "Pavê de chocolate branco"));
+               .body("id", equalTo(ID_CAT_EXISTENTE),
+                       "nome", equalTo(NOME_CAT_EXISTENTE),
+                        "produtos.nome", containsInAnyOrder(CAT_PRODUTOS.toArray()));
     }
 
     @Test
     public void deve_retornar_erro_ao_nao_encontrar_categoria() {
        given()
-               .pathParam("id", 10)
-       .get("/categorias/{id}")
+               .pathParam("id", ID_CAT_INEXISTENTE)
+       .get(URN_CATEGORIA_ID)
        .then()
                .log().body().and()
                .statusCode(HttpStatus.NOT_FOUND.value())
                .body("status", equalTo(HttpStatus.NOT_FOUND.value()),
-                       "message", equalTo("Categoria não encontrada. ID: 10"));
+                       "message", equalTo(ERRO_CAT_NAO_ENCONTRADA));
     }
 
     /** Insert */
@@ -60,57 +61,57 @@ public class CategoriaResourceTest extends ConfigurationResourceTests {
                 .contentType(ContentType.JSON)
                 .body(gson.toJson(categoria))
         .when()
-                .post("/categorias")
+                .post(URN_CATEGORIA)
         .then()
                 .log().headers()
             .and()
                 .log().body()
             .and()
                 .statusCode(HttpStatus.CREATED.value())
-                .header("Location", equalTo("http://localhost:"+ porta +"/categorias/5"))
-                .body("id", equalTo(5),
-                        "nome",equalTo("Comidas nordestina"),
+                .header("Location", equalTo("http://localhost:"+ porta + URN_CATEGORIA + ID_NOVA_CAT))
+                .body("id", equalTo(ID_NOVA_CAT),
+                        "nome",equalTo(NOME_CAT),
                         "produtos.nome", is(empty()));
 
     }
 
     @Test
     public void nao_deve_salvar_duas_categorias_com_o_mesmo_nome() {
-        categoria.setNome("Bolos");
+        categoria.setNome(NOME_CAT_EXISTENTE);
         given()
                 .request()
                 .contentType(ContentType.JSON)
                 .body(gson.toJson(categoria))
         .when()
-                .post("/categorias")
+                .post(URN_CATEGORIA)
         .then()
                 .log().body().and()
                 .statusCode(HttpStatus.BAD_REQUEST.value())
                 .body("status", equalTo(HttpStatus.BAD_REQUEST.value()),
-                        "message", equalTo("A categoria Bolos já esta cadastrada."));
+                        "message", equalTo(ERRO_CAT_EXISTENTE));
     }
 
     @Test
     public void nao_deve_salvar_categoria_com_menos_de_tres_letras() {
-        categoria.setNome("ab");
+        categoria.setNome(NOME_PEQUENO_CAT);
         given()
                 .request()
                 .contentType(ContentType.JSON)
                 .body(gson.toJson(categoria))
         .when()
-                .post("/categorias")
+                .post(URN_CATEGORIA)
         .then()
                 .log().body().and()
                 .statusCode(HttpStatus.BAD_REQUEST.value())
                 .body("status", equalTo(HttpStatus.BAD_REQUEST.value()),
-                        "message", equalTo("Erro na validação dos dados."),
+                        "message", equalTo(ERRO_VALIDACAO_DADOS),
                         "errors.field", containsInAnyOrder("nome"),
-                        "errors.message", containsInAnyOrder("O tamanho deve ser entre 3 e 50 caracteres."));
+                        "errors.message", containsInAnyOrder(ERRO_TAMANHO_ENTRE_3_E_50));
     }
 
     @Test
     public void nao_deve_salvar_categoria_com_mais_de_cinquenta_letras() {
-        categoria.setNome("Bolo Festa PavêDechocolate branco Tapioca de frango");
+        categoria.setNome(NOME_GRANDE_CAT);
         given()
                 .request()
                 .contentType(ContentType.JSON)
@@ -121,45 +122,45 @@ public class CategoriaResourceTest extends ConfigurationResourceTests {
                 .log().body().and()
                 .statusCode(HttpStatus.BAD_REQUEST.value())
                 .body("status", equalTo(HttpStatus.BAD_REQUEST.value()),
-                        "message", equalTo("Erro na validação dos dados."),
+                        "message", equalTo(ERRO_VALIDACAO_DADOS),
                         "errors.field", containsInAnyOrder("nome"),
-                        "errors.message", containsInAnyOrder("O tamanho deve ser entre 3 e 50 caracteres."));
+                        "errors.message", containsInAnyOrder(ERRO_TAMANHO_ENTRE_3_E_50));
     }
 
     @Test
     public void nao_deve_salvar_categoria_com_nome_tendo_somente_espacos(){
-        categoria.setNome("   ");
+        categoria.setNome(STRING_VAZIA_COM_ESPACO);
         given()
                 .request()
                 .contentType(ContentType.JSON)
                 .body(gson.toJson(categoria))
         .when()
-                .post("/categorias")
+                .post(URN_CATEGORIA)
         .then()
                 .log().body().and()
                 .statusCode(HttpStatus.BAD_REQUEST.value())
                 .body("status", equalTo(HttpStatus.BAD_REQUEST.value()),
-                        "message", equalTo("Erro na validação dos dados."),
+                        "message", equalTo(ERRO_VALIDACAO_DADOS),
                         "errors.field", containsInAnyOrder("nome"),
-                        "errors.message", containsInAnyOrder("Preenchimento obrigatório."));
+                        "errors.message", containsInAnyOrder(ERRO_PREENCHIMENTO_OBRIGATORIO));
     }
 
     @Test
     public void nao_deve_salvar_categoria_com_nome_vazio(){
-        categoria.setNome("");
+        categoria.setNome(STRING_VAZIA);
         given()
                 .request()
                 .contentType(ContentType.JSON)
                 .body(gson.toJson(categoria))
         .when()
-                .post("/categorias")
+                .post(URN_CATEGORIA)
         .then()
                 .log().body().and()
                 .statusCode(HttpStatus.BAD_REQUEST.value())
                 .body("status", equalTo(HttpStatus.BAD_REQUEST.value()),
-                        "message", equalTo("Erro na validação dos dados."),
+                        "message", equalTo(ERRO_VALIDACAO_DADOS),
                         "errors.field", hasItems("nome"),
-                        "errors.message", hasItems("Preenchimento obrigatório."));
+                        "errors.message", hasItems(ERRO_PREENCHIMENTO_OBRIGATORIO));
     }
 
     @Test
@@ -170,125 +171,125 @@ public class CategoriaResourceTest extends ConfigurationResourceTests {
                 .contentType(ContentType.JSON)
                 .body(gson.toJson(categoria))
         .when()
-                .post("/categorias")
+                .post(URN_CATEGORIA)
         .then()
                 .log().body().and()
                 .statusCode(HttpStatus.BAD_REQUEST.value())
                 .body("status", equalTo(HttpStatus.BAD_REQUEST.value()),
-                        "message", equalTo("Erro na validação dos dados."),
+                        "message", equalTo(ERRO_VALIDACAO_DADOS),
                         "errors.field", hasItems("nome"),
-                        "errors.message", hasItems("Preenchimento obrigatório."));
+                        "errors.message", hasItems(ERRO_PREENCHIMENTO_OBRIGATORIO));
     }
 
     @Test
     public void deve_inserir_ao_inves_de_atualizar_quando_categoria_chegar_com_id() {
-        categoria.setId(3);
+        categoria.setId(ID_CAT_EXISTENTE);
 
         given()
                 .request()
                 .contentType(ContentType.JSON)
                 .body(gson.toJson(categoria))
         .when()
-                .post("/categorias")
+                .post(URN_CATEGORIA)
         .then()
                 .log().headers()
             .and()
                 .log().body()
             .and()
                 .statusCode(HttpStatus.CREATED.value())
-                .header("Location", equalTo("http://localhost:"+ porta +"/categorias/5"))
+                .header("Location", equalTo("http://localhost:"+ porta + URN_CATEGORIA + ID_NOVA_CAT))
                 .body("id", equalTo(5),
-                        "nome",equalTo("Comidas nordestina"),
+                        "nome",equalTo(NOME_CAT),
                         "produtos.nome", is(empty()));
     }
 
     /** Update */
     @Test
     public void deve_atualizar_com_sucesso_uma_categoria() {
-        categoria.setId(3);
+        categoria.setId(ID_CAT_EXISTENTE);
         given()
                 .request()
                 .contentType(ContentType.JSON)
                 .body(gson.toJson(categoria))
         .when()
-                .put("/categorias")
+                .put(URN_CATEGORIA)
         .then()
                 .log().body().and()
                 .statusCode(HttpStatus.OK.value())
-                .body("id", equalTo(3),
-                        "nome", equalTo("Comidas nordestina"),
-                        "produtos.nome", containsInAnyOrder("Pão de cebola", "Pão de alho"));
+                .body("id", equalTo(ID_CAT_EXISTENTE),
+                        "nome", equalTo(NOME_CAT),
+                        "produtos.nome", containsInAnyOrder(CAT_PRODUTOS.toArray()));
     }
 
     @Test
     public void deve_retornar_erro_ao_tentar_atualizar_categoria_com_nome_ja_existente() {
-        categoria.setId(3);
-        categoria.setNome("Salgados");
+        categoria.setId(ID_CAT_EXISTENTE_3);
+        categoria.setNome(NOME_CAT_EXISTENTE);
         given()
                 .request()
                 .contentType(ContentType.JSON)
                 .body(gson.toJson(categoria))
         .when()
-                .put("/categorias")
+                .put(URN_CATEGORIA)
         .then()
                 .log().body().and()
                 .statusCode(HttpStatus.BAD_REQUEST.value())
                 .body("status", equalTo(HttpStatus.BAD_REQUEST.value()),
-                        "message", equalTo("A categoria Salgados já esta cadastrada."));
+                        "message", equalTo(ERRO_CAT_EXISTENTE));
     }
 
     @Test
     public void deve_retornar_erro_ao_atualizar_com_nome_vazio() {
-        categoria.setId(3);
-        categoria.setNome("");
+        categoria.setId(ID_CAT_EXISTENTE);
+        categoria.setNome(STRING_VAZIA);
         given()
                 .request()
                 .contentType(ContentType.JSON)
                 .body(gson.toJson(categoria))
         .when()
-                .put("/categorias")
+                .put(URN_CATEGORIA)
         .then()
                 .log().body().and()
                 .statusCode(HttpStatus.BAD_REQUEST.value())
                 .body("status", equalTo(HttpStatus.BAD_REQUEST.value()),
-                        "message", equalTo("Erro na validação dos dados."),
+                        "message", equalTo(ERRO_VALIDACAO_DADOS),
                         "errors.field", hasItems("nome"),
-                        "errors.message", hasItems("Preenchimento obrigatório."));
+                        "errors.message", hasItems(ERRO_PREENCHIMENTO_OBRIGATORIO));
     }
 
     @Test
     public void deve_retornar_erro_ao_atualizar_com_nome_menor_que_tres_caracteres() {
-        categoria.setId(3);
-        categoria.setNome("ab");
+        categoria.setId(ID_CAT_EXISTENTE);
+        categoria.setNome(NOME_PEQUENO_CAT);
         given()
                 .request()
                 .contentType(ContentType.JSON)
                 .body(gson.toJson(categoria))
         .when()
-                .put("/categorias")
+                .put(URN_CATEGORIA)
         .then()
                 .log().body().and()
                 .statusCode(HttpStatus.BAD_REQUEST.value())
                 .body("status", equalTo(HttpStatus.BAD_REQUEST.value()),
-                        "message", equalTo("Erro na validação dos dados."),
+                        "message", equalTo(ERRO_VALIDACAO_DADOS),
                         "errors.field", containsInAnyOrder("nome"),
-                        "errors.message", containsInAnyOrder("O tamanho deve ser entre 3 e 50 caracteres."));
+                        "errors.message", containsInAnyOrder(ERRO_TAMANHO_ENTRE_3_E_50));
     }
 
     @Test
     public void deve_retornar_erro_ao_tentar_atualizar_categoria_com_id_inexistente(){
-        categoria.setId(100);
+        categoria.setId(ID_CAT_INEXISTENTE);
         given()
                 .request()
                 .contentType(ContentType.JSON)
                 .body(gson.toJson(categoria))
         .when()
-                .put("/categorias")
+                .put(URN_CATEGORIA)
         .then()
                 .log().body().and()
                 .statusCode(HttpStatus.NOT_FOUND.value())
                 .body("status", equalTo(HttpStatus.NOT_FOUND.value()),
-                        "message", equalTo("Categoria não encontrada. ID: 100"));
+                        "message", equalTo(ERRO_CAT_NAO_ENCONTRADA));
     }
 
     @Test
@@ -304,16 +305,16 @@ public class CategoriaResourceTest extends ConfigurationResourceTests {
                 .log().body().and()
                 .statusCode(HttpStatus.BAD_REQUEST.value())
                 .body("status", equalTo(HttpStatus.BAD_REQUEST.value()),
-                        "message", equalTo("O campo id é obrigatório."));
+                        "message", equalTo(ERRO_ID_OBRIGATORIO));
     }
 
     /** Delete */
     @Test
     public void deve_deletar_uma_categoria_com_sucesso() {
         given()
-                .pathParam("id", 0)
+                .pathParam("id", ID_CAT_SEM_PRODUTO)
         .when()
-                .delete("/categorias/{id}")
+                .delete(URN_CATEGORIA_ID)
         .then()
                 .statusCode(HttpStatus.NO_CONTENT.value());
     }
@@ -321,38 +322,38 @@ public class CategoriaResourceTest extends ConfigurationResourceTests {
     @Test
     public void deve_retornar_erro_ao_excluir_categoria_com_produtos() {
         given()
-                .pathParam("id", 2)
+                .pathParam("id", ID_CAT_EXISTENTE)
         .when()
-                .delete("/categorias/{id}")
+                .delete(URN_CATEGORIA_ID)
         .then()
                 .log().body()
                 .statusCode(HttpStatus.BAD_REQUEST.value())
                 .body("status", equalTo(HttpStatus.BAD_REQUEST.value()),
-                        "message", equalTo("Não é possível excluir uma categoria que possui produtos."));
+                        "message", equalTo(ERRO_EXCUIR_CAT_COM_PRODUTO));
     }
 
     @Test
     public void deve_retornar_erro_ao_excluir_categoria_inexistente() {
         given()
-                .pathParam("id", 10)
+                .pathParam("id", ID_CAT_INEXISTENTE)
         .when()
                 .delete("/categorias/{id}")
         .then()
                 .log().body()
                 .statusCode(HttpStatus.NOT_FOUND.value())
                 .body("status", equalTo(HttpStatus.NOT_FOUND.value()),
-                        "message", equalTo("Categoria não encontrada. ID: 10"));
+                        "message", equalTo(ERRO_CAT_NAO_ENCONTRADA));
     }
 
     /**Busca paginada */
     @Test
     public void deve_retornar_todas_as_categorias_paginada() {
-        get("/categorias")
+        get(URN_CATEGORIA)
         .then()
                 .log().body()
                 .statusCode(HttpStatus.OK.value())
-                .body("content.nome", containsInAnyOrder("Comida Vegana", "Salgados", "Pães", "Doces", "Bolos"),
-                        "totalElements", equalTo(5),
+                .body("content.nome", containsInAnyOrder(TODAS_CAT.toArray()),
+                        "totalElements", equalTo(TODAS_CAT.size()),
                         "empty", equalTo(false));
     }
 
@@ -360,12 +361,12 @@ public class CategoriaResourceTest extends ConfigurationResourceTests {
     public void deve_retornar_as_categorias_que_contem_as_letras_os_paginado() {
         given()
                 .param("nome", "os")
-        .get("/categorias")
+        .get(URN_CATEGORIA)
         .then()
                 .log().body()
                 .statusCode(HttpStatus.OK.value())
-                .body("content.nome", containsInAnyOrder("Salgados", "Bolos"),
-                        "totalElements", equalTo(2));
+                .body("content.nome", containsInAnyOrder(CAT_COM_OS.toArray()),
+                        "totalElements", equalTo(CAT_COM_OS.size()));
     }
 
     @Test
@@ -375,7 +376,7 @@ public class CategoriaResourceTest extends ConfigurationResourceTests {
                 .param("linesPerPage", 3)
                 .param("orderBy", "id")
                 .param("direction", "DESC")
-        .get("/categorias")
+        .get(URN_CATEGORIA)
         .then()
                 .log().body()
                 .statusCode(HttpStatus.OK.value())
