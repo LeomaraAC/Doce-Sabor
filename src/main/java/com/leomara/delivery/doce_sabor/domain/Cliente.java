@@ -25,15 +25,15 @@ public class Cliente {
     @CollectionTable(name = "Telefone")
     private Set<String> telefones = new HashSet<>();
 
-    @OneToOne(mappedBy = "cliente")
+    @OneToOne(mappedBy = "cliente", cascade = CascadeType.ALL)
     private Endereco endereco;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "cliente")
+    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL)
     private List<Pedido> pedidos = new ArrayList<>();
 
     @JsonIgnore
-    @OneToMany(mappedBy = "id.cliente")
+    @OneToMany(mappedBy = "id.cliente", cascade = CascadeType.ALL)
     private List<Classificacao> classificacaos = new ArrayList<>();
 
     public Cliente(Integer id, String nome, String cpf, String email, String senha, Endereco endereco) {
