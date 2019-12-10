@@ -1,6 +1,6 @@
 package com.leomara.delivery.doce_sabor.repositories;
 
-import com.leomara.delivery.doce_sabor.config.ConfigurationTests;
+import com.leomara.delivery.doce_sabor.until.ConfigurationTests;
 import com.leomara.delivery.doce_sabor.domain.Categoria;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

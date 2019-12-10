@@ -1,7 +1,7 @@
 package com.leomara.delivery.doce_sabor.resources.config;
 
 
-import com.leomara.delivery.doce_sabor.config.ConfigurationTests;
+import com.leomara.delivery.doce_sabor.until.ConfigurationTests;
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.boot.test.context.SpringBootTest;
