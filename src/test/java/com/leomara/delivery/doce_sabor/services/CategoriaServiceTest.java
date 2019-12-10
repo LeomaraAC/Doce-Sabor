@@ -38,13 +38,13 @@ public class CategoriaServiceTest {
     private Produto p1;
     private Produto p2;
     private Page<Categoria> page;
-    
+
     private static final String FILTER = "x";
 
     @BeforeEach
     public void setUp() {
-        categoria = new Categoria(ID_CAT_EXISTENTE, NOME_CAT);
-        categoriaAux = new Categoria(ID_CAT_EXISTENTE, NOME_CAT);
+        categoria = new Categoria(ID_EXISTENTE, NOME);
+        categoriaAux = new Categoria(ID_EXISTENTE, NOME);
 
         p1 = new Produto();
         p1.setNome(PRODUTO_1);
@@ -54,7 +54,7 @@ public class CategoriaServiceTest {
 
         page = new PageImpl<>(Arrays.asList(categoria, categoriaAux));
 
-        when(repository.findById(ID_CAT_EXISTENTE)).thenReturn(Optional.of(categoria));
+        when(repository.findById(ID_EXISTENTE)).thenReturn(Optional.of(categoria));
         when(repository.save(categoria)).thenReturn(categoriaAux);
         when(repository.filter(" ", PAGE_REQUEST)).thenReturn(page);
     }
@@ -69,8 +69,8 @@ public class CategoriaServiceTest {
 
     @Test
     public void nao_deve_salvar_duas_categorias_com_o_mesmo_nome() {
-        when(repository.findByNome(NOME_CAT_EXISTENTE)).thenReturn(Optional.of(categoria));
-        categoriaAux.setNome(NOME_CAT_EXISTENTE);
+        when(repository.findByNome(NOME_EXISTENTE)).thenReturn(Optional.of(categoria));
+        categoriaAux.setNome(NOME_EXISTENTE);
         exception = assertThrows(DataIntegrityException.class, () -> sut.insert(categoriaAux));
         assertEquals(ERRO_CAT_EXISTENTE, exception.getMessage());
     }
@@ -81,30 +81,30 @@ public class CategoriaServiceTest {
 
         verify(repository).save(categoria);
         assertAll("Deve inserir uma categoria com sucesso",
-                () -> assertEquals(ID_CAT_EXISTENTE, cat.getId()),
-                () -> assertEquals(NOME_CAT, cat.getNome()));
+                () -> assertEquals(ID_EXISTENTE, cat.getId()),
+                () -> assertEquals(NOME, cat.getNome()));
     }
 
     /** Método Delete*/
 
     @Test
     public void nao_deve_deletar_categoria_com_id_inexistente() {
-        when(repository.findById(ID_CAT_INEXISTENTE)).thenReturn(Optional.empty());
-        exception = assertThrows(ObjectNotFoundException.class, () -> sut.delete(ID_CAT_INEXISTENTE));
+        when(repository.findById(ID_INEXISTENTE)).thenReturn(Optional.empty());
+        exception = assertThrows(ObjectNotFoundException.class, () -> sut.delete(ID_INEXISTENTE));
         assertEquals(ERRO_CAT_NAO_ENCONTRADA, exception.getMessage());
     }
 
     @Test
     public void deve_chamar_metodo_delete_by_id_do_repositorio() {
-        sut.delete(ID_CAT_EXISTENTE);
+        sut.delete(ID_EXISTENTE);
 
-        verify(repository).deleteById(ID_CAT_EXISTENTE);
+        verify(repository).deleteById(ID_EXISTENTE);
     }
 
     @Test
     public void nao_deve_excluir_categoria_com_produtos_associados() {
         categoria.setProdutos(Arrays.asList(p1, p2));
-        exception = assertThrows(DataIntegrityException.class, () -> sut.delete(ID_CAT_EXISTENTE));
+        exception = assertThrows(DataIntegrityException.class, () -> sut.delete(ID_EXISTENTE));
         assertEquals(ERRO_EXCUIR_CAT_COM_PRODUTO, exception.getMessage());
     }
 
@@ -112,18 +112,18 @@ public class CategoriaServiceTest {
 
     @Test
     public void deve_buscar_uma_categoria_pelo_id() {
-        Categoria cat = sut.find(ID_CAT_EXISTENTE);
-        verify(repository).findById(ID_CAT_EXISTENTE);
+        Categoria cat = sut.find(ID_EXISTENTE);
+        verify(repository).findById(ID_EXISTENTE);
 
         assertAll("Deve retornar uma categoria",
-                    () -> assertEquals(ID_CAT_EXISTENTE, cat.getId()),
-                    () -> assertEquals(NOME_CAT, cat.getNome()));
+                    () -> assertEquals(ID_EXISTENTE, cat.getId()),
+                    () -> assertEquals(NOME, cat.getNome()));
     }
 
     @Test
     public void deve_retornar_excecao_ao_nao_encontrar_categoria() {
-        when(repository.findById(ID_CAT_INEXISTENTE)).thenReturn(Optional.empty());
-        exception = assertThrows(ObjectNotFoundException.class, () -> sut.find(ID_CAT_INEXISTENTE));
+        when(repository.findById(ID_INEXISTENTE)).thenReturn(Optional.empty());
+        exception = assertThrows(ObjectNotFoundException.class, () -> sut.find(ID_INEXISTENTE));
         assertEquals(ERRO_CAT_NAO_ENCONTRADA, exception.getMessage());
     }
 
@@ -135,23 +135,23 @@ public class CategoriaServiceTest {
 
         verify(repository).save(categoria);
         assertAll("Deve atualizar uma categoria com sucesso",
-                    () -> assertEquals(ID_CAT_EXISTENTE, cat.getId()),
-                    () -> assertEquals(NOME_CAT, cat.getNome()));
+                    () -> assertEquals(ID_EXISTENTE, cat.getId()),
+                    () -> assertEquals(NOME, cat.getNome()));
     }
 
     @Test
     public void nao_deve_atualizar_categoria_id_inexistente() {
-        when(repository.findById(ID_CAT_INEXISTENTE)).thenReturn(Optional.empty());
-        categoria.setId(ID_CAT_INEXISTENTE);
+        when(repository.findById(ID_INEXISTENTE)).thenReturn(Optional.empty());
+        categoria.setId(ID_INEXISTENTE);
         exception = assertThrows(ObjectNotFoundException.class, () ->sut.update(categoria));
         assertEquals(ERRO_CAT_NAO_ENCONTRADA, exception.getMessage());
     }
 
     @Test
     public void nao_deve_atualizar_categoria_com_nome_igual_a_de_outra_categoria() {
-        categoriaAux.setId(ID_CAT_EXISTENTE + 1);
-        when(repository.findByNome(NOME_CAT_EXISTENTE)).thenReturn(Optional.of(categoriaAux));
-        categoria.setNome(NOME_CAT_EXISTENTE);
+        categoriaAux.setId(ID_EXISTENTE + 1);
+        when(repository.findByNome(NOME_EXISTENTE)).thenReturn(Optional.of(categoriaAux));
+        categoria.setNome(NOME_EXISTENTE);
         exception = assertThrows(DataIntegrityException.class, () -> sut.update(categoria));
         assertEquals(ERRO_CAT_EXISTENTE, exception.getMessage());
     }
@@ -166,7 +166,7 @@ public class CategoriaServiceTest {
 
     @Test
     public void deve_retornar_objeto_tipo_page_filtrado() {
-        categoriaAux = new Categoria(ID_CAT_EXISTENTE, NOME_CAT + " Aux");
+        categoriaAux = new Categoria(ID_EXISTENTE, NOME + " Aux");
         page = new PageImpl<>(Arrays.asList(categoriaAux));
         when(repository.filter(FILTER, PAGE_REQUEST)).thenReturn(page);
 
@@ -182,7 +182,7 @@ public class CategoriaServiceTest {
     /** Método fromDTO */
     @Test
     public void deve_retornar_uma_classe_categoria() {
-        CategoriaDTO objDTO = new CategoriaDTO(ID_CAT_EXISTENTE, NOME_CAT);
+        CategoriaDTO objDTO = new CategoriaDTO(ID_EXISTENTE, NOME);
         Categoria cat = sut.fromDTO(objDTO);
 
         assertAll("Deve retornar um objeto Categoria",

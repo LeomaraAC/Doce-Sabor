@@ -28,11 +28,11 @@ public class ClienteResourceTest extends ConfigurationResourceTests {
         gson = new Gson();
         cliente = new ClienteDTO();
 
-        cliente.setNome(NOME_CLIENTE);
-        cliente.setCpf(CPF_CLIENTE);
-        cliente.setEmail(EMAIL_CLIENTE);
-        cliente.setSenha(SENHA_CLIENTE);
-        cliente.getTelefones().addAll(Arrays.asList(TELEFONE_CLIENTE));
+        cliente.setNome(NOME);
+        cliente.setCpf(CPF);
+        cliente.setEmail(EMAIL);
+        cliente.setSenha(SENHA);
+        cliente.getTelefones().addAll(Arrays.asList(TELEFONE));
         cliente.setLogradouro(LOGRADOURO);
         cliente.setBairro(BAIRRO);
         cliente.setNumero(NUMERO);
@@ -50,20 +50,20 @@ public class ClienteResourceTest extends ConfigurationResourceTests {
                 .contentType(ContentType.JSON)
                 .body(gson.toJson(cliente))
         .when()
-                .post(URN_CLIENTE)
+                .post(URN)
         .then()
                 .log().headers()
             .and()
                 .log().body()
             .and()
                 .statusCode(HttpStatus.CREATED.value())
-                .header("Location", equalTo("http://localhost:"+ porta +URN_CLIENTE + ID_NOVO_CLIENTE))
-                .body("id", equalTo(ID_NOVO_CLIENTE),
-                        "nome", equalTo(NOME_CLIENTE),
-                        "cpf", equalTo(CPF_CLIENTE),
-                        "senha", equalTo(SENHA_CLIENTE),
-                        "email", equalTo(EMAIL_CLIENTE),
-                        "telefones", contains(TELEFONE_CLIENTE),
+                .header("Location", equalTo("http://localhost:"+ porta + URN + ID_NOVO))
+                .body("id", equalTo(ID_NOVO),
+                        "nome", equalTo(NOME),
+                        "cpf", equalTo(CPF),
+                        "senha", equalTo(SENHA),
+                        "email", equalTo(EMAIL),
+                        "telefones", contains(TELEFONE),
                         "endereco.cidade", equalTo(CIDADE),
                         "endereco.logradouro", equalTo(LOGRADOURO));
     }
@@ -76,7 +76,7 @@ public class ClienteResourceTest extends ConfigurationResourceTests {
                 .contentType(ContentType.JSON)
                 .body(gson.toJson(cliente))
         .when()
-                .post(URN_CLIENTE)
+                .post(URN)
         .then()
                 .log().body()
             .and()
@@ -90,18 +90,18 @@ public class ClienteResourceTest extends ConfigurationResourceTests {
     @Test
     public void deve_retornar_excecao_ao_salvar_cliente_sem_logradouro_e_outros_campos_do_endereco() {
         ClienteDTO clienteAux = new ClienteDTO();
-        clienteAux.setNome(NOME_CLIENTE);
-        clienteAux.setCpf(CPF_CLIENTE);
-        clienteAux.setEmail(EMAIL_CLIENTE);
-        clienteAux.setSenha(SENHA_CLIENTE);
-        clienteAux.getTelefones().addAll(Arrays.asList(TELEFONE_CLIENTE));
+        clienteAux.setNome(NOME);
+        clienteAux.setCpf(CPF);
+        clienteAux.setEmail(EMAIL);
+        clienteAux.setSenha(SENHA);
+        clienteAux.getTelefones().addAll(Arrays.asList(TELEFONE));
 
         given()
                 .request()
                 .contentType(ContentType.JSON)
                 .body(gson.toJson(clienteAux))
         .when()
-                .post(URN_CLIENTE)
+                .post(URN)
         .then()
                 .log().body()
             .and()
@@ -120,7 +120,7 @@ public class ClienteResourceTest extends ConfigurationResourceTests {
                 .contentType(ContentType.JSON)
                 .body(gson.toJson(cliente))
         .when()
-                .post(URN_CLIENTE)
+                .post(URN)
         .then()
                 .log().body().and()
                 .statusCode(HttpStatus.CREATED.value())
@@ -136,7 +136,7 @@ public class ClienteResourceTest extends ConfigurationResourceTests {
                 .contentType(ContentType.JSON)
                 .body(gson.toJson(cliente))
         .when()
-                .post(URN_CLIENTE)
+                .post(URN)
         .then()
                 .log().body().and()
                 .statusCode(HttpStatus.BAD_REQUEST.value())
@@ -152,7 +152,7 @@ public class ClienteResourceTest extends ConfigurationResourceTests {
                 .contentType(ContentType.JSON)
                 .body(gson.toJson(cliente))
         .when()
-                .post(URN_CLIENTE)
+                .post(URN)
         .then()
                 .statusCode(HttpStatus.BAD_REQUEST.value())
                 .body("status", equalTo(HttpStatus.BAD_REQUEST.value()),

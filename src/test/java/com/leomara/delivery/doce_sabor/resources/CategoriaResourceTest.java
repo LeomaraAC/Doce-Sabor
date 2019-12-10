@@ -24,28 +24,28 @@ public class CategoriaResourceTest extends ConfigurationResourceTests {
     void setUp() {
         gson = new Gson();
         categoria = new CategoriaDTO();
-        categoria.setNome(NOME_CAT);
+        categoria.setNome(NOME);
     }
 
     /** FindById */
     @Test
     public void deve_buscar_categoria_pelo_id(){
        given()
-               .pathParam("id", ID_CAT_EXISTENTE)
-       .get(URN_CATEGORIA_ID)
+               .pathParam("id", ID_EXISTENTE)
+       .get(URN_COM_ID)
        .then()
                .log().body().and()
                .statusCode(HttpStatus.OK.value())
-               .body("id", equalTo(ID_CAT_EXISTENTE),
-                       "nome", equalTo(NOME_CAT_EXISTENTE),
-                        "produtos.nome", containsInAnyOrder(CAT_PRODUTOS.toArray()));
+               .body("id", equalTo(ID_EXISTENTE),
+                       "nome", equalTo(NOME_EXISTENTE),
+                        "produtos.nome", containsInAnyOrder(PRODUTOS.toArray()));
     }
 
     @Test
     public void deve_retornar_erro_ao_nao_encontrar_categoria() {
        given()
-               .pathParam("id", ID_CAT_INEXISTENTE)
-       .get(URN_CATEGORIA_ID)
+               .pathParam("id", ID_INEXISTENTE)
+       .get(URN_COM_ID)
        .then()
                .log().body().and()
                .statusCode(HttpStatus.NOT_FOUND.value())
@@ -61,29 +61,29 @@ public class CategoriaResourceTest extends ConfigurationResourceTests {
                 .contentType(ContentType.JSON)
                 .body(gson.toJson(categoria))
         .when()
-                .post(URN_CATEGORIA)
+                .post(URN)
         .then()
                 .log().headers()
             .and()
                 .log().body()
             .and()
                 .statusCode(HttpStatus.CREATED.value())
-                .header("Location", equalTo("http://localhost:"+ porta + URN_CATEGORIA + ID_NOVA_CAT))
-                .body("id", equalTo(ID_NOVA_CAT),
-                        "nome",equalTo(NOME_CAT),
+                .header("Location", equalTo("http://localhost:"+ porta + URN + ID_NOVO))
+                .body("id", equalTo(ID_NOVO),
+                        "nome",equalTo(NOME),
                         "produtos.nome", is(empty()));
 
     }
 
     @Test
     public void nao_deve_salvar_duas_categorias_com_o_mesmo_nome() {
-        categoria.setNome(NOME_CAT_EXISTENTE);
+        categoria.setNome(NOME_EXISTENTE);
         given()
                 .request()
                 .contentType(ContentType.JSON)
                 .body(gson.toJson(categoria))
         .when()
-                .post(URN_CATEGORIA)
+                .post(URN)
         .then()
                 .log().body().and()
                 .statusCode(HttpStatus.BAD_REQUEST.value())
@@ -93,13 +93,13 @@ public class CategoriaResourceTest extends ConfigurationResourceTests {
 
     @Test
     public void nao_deve_salvar_categoria_com_menos_de_tres_letras() {
-        categoria.setNome(NOME_PEQUENO_CAT);
+        categoria.setNome(NOME_PEQUENO);
         given()
                 .request()
                 .contentType(ContentType.JSON)
                 .body(gson.toJson(categoria))
         .when()
-                .post(URN_CATEGORIA)
+                .post(URN)
         .then()
                 .log().body().and()
                 .statusCode(HttpStatus.BAD_REQUEST.value())
@@ -111,7 +111,7 @@ public class CategoriaResourceTest extends ConfigurationResourceTests {
 
     @Test
     public void nao_deve_salvar_categoria_com_mais_de_cinquenta_letras() {
-        categoria.setNome(NOME_GRANDE_CAT);
+        categoria.setNome(NOME_GRANDE);
         given()
                 .request()
                 .contentType(ContentType.JSON)
@@ -135,7 +135,7 @@ public class CategoriaResourceTest extends ConfigurationResourceTests {
                 .contentType(ContentType.JSON)
                 .body(gson.toJson(categoria))
         .when()
-                .post(URN_CATEGORIA)
+                .post(URN)
         .then()
                 .log().body().and()
                 .statusCode(HttpStatus.BAD_REQUEST.value())
@@ -153,7 +153,7 @@ public class CategoriaResourceTest extends ConfigurationResourceTests {
                 .contentType(ContentType.JSON)
                 .body(gson.toJson(categoria))
         .when()
-                .post(URN_CATEGORIA)
+                .post(URN)
         .then()
                 .log().body().and()
                 .statusCode(HttpStatus.BAD_REQUEST.value())
@@ -171,7 +171,7 @@ public class CategoriaResourceTest extends ConfigurationResourceTests {
                 .contentType(ContentType.JSON)
                 .body(gson.toJson(categoria))
         .when()
-                .post(URN_CATEGORIA)
+                .post(URN)
         .then()
                 .log().body().and()
                 .statusCode(HttpStatus.BAD_REQUEST.value())
@@ -183,54 +183,54 @@ public class CategoriaResourceTest extends ConfigurationResourceTests {
 
     @Test
     public void deve_inserir_ao_inves_de_atualizar_quando_categoria_chegar_com_id() {
-        categoria.setId(ID_CAT_EXISTENTE);
+        categoria.setId(ID_EXISTENTE);
 
         given()
                 .request()
                 .contentType(ContentType.JSON)
                 .body(gson.toJson(categoria))
         .when()
-                .post(URN_CATEGORIA)
+                .post(URN)
         .then()
                 .log().headers()
             .and()
                 .log().body()
             .and()
                 .statusCode(HttpStatus.CREATED.value())
-                .header("Location", equalTo("http://localhost:"+ porta + URN_CATEGORIA + ID_NOVA_CAT))
+                .header("Location", equalTo("http://localhost:"+ porta + URN + ID_NOVO))
                 .body("id", equalTo(5),
-                        "nome",equalTo(NOME_CAT),
+                        "nome",equalTo(NOME),
                         "produtos.nome", is(empty()));
     }
 
     /** Update */
     @Test
     public void deve_atualizar_com_sucesso_uma_categoria() {
-        categoria.setId(ID_CAT_EXISTENTE);
+        categoria.setId(ID_EXISTENTE);
         given()
                 .request()
                 .contentType(ContentType.JSON)
                 .body(gson.toJson(categoria))
         .when()
-                .put(URN_CATEGORIA)
+                .put(URN)
         .then()
                 .log().body().and()
                 .statusCode(HttpStatus.OK.value())
-                .body("id", equalTo(ID_CAT_EXISTENTE),
-                        "nome", equalTo(NOME_CAT),
-                        "produtos.nome", containsInAnyOrder(CAT_PRODUTOS.toArray()));
+                .body("id", equalTo(ID_EXISTENTE),
+                        "nome", equalTo(NOME),
+                        "produtos.nome", containsInAnyOrder(PRODUTOS.toArray()));
     }
 
     @Test
     public void deve_retornar_erro_ao_tentar_atualizar_categoria_com_nome_ja_existente() {
-        categoria.setId(ID_CAT_EXISTENTE_3);
-        categoria.setNome(NOME_CAT_EXISTENTE);
+        categoria.setId(ID_EXISTENTE_3);
+        categoria.setNome(NOME_EXISTENTE);
         given()
                 .request()
                 .contentType(ContentType.JSON)
                 .body(gson.toJson(categoria))
         .when()
-                .put(URN_CATEGORIA)
+                .put(URN)
         .then()
                 .log().body().and()
                 .statusCode(HttpStatus.BAD_REQUEST.value())
@@ -240,14 +240,14 @@ public class CategoriaResourceTest extends ConfigurationResourceTests {
 
     @Test
     public void deve_retornar_erro_ao_atualizar_com_nome_vazio() {
-        categoria.setId(ID_CAT_EXISTENTE);
+        categoria.setId(ID_EXISTENTE);
         categoria.setNome(STRING_VAZIA);
         given()
                 .request()
                 .contentType(ContentType.JSON)
                 .body(gson.toJson(categoria))
         .when()
-                .put(URN_CATEGORIA)
+                .put(URN)
         .then()
                 .log().body().and()
                 .statusCode(HttpStatus.BAD_REQUEST.value())
@@ -259,14 +259,14 @@ public class CategoriaResourceTest extends ConfigurationResourceTests {
 
     @Test
     public void deve_retornar_erro_ao_atualizar_com_nome_menor_que_tres_caracteres() {
-        categoria.setId(ID_CAT_EXISTENTE);
-        categoria.setNome(NOME_PEQUENO_CAT);
+        categoria.setId(ID_EXISTENTE);
+        categoria.setNome(NOME_PEQUENO);
         given()
                 .request()
                 .contentType(ContentType.JSON)
                 .body(gson.toJson(categoria))
         .when()
-                .put(URN_CATEGORIA)
+                .put(URN)
         .then()
                 .log().body().and()
                 .statusCode(HttpStatus.BAD_REQUEST.value())
@@ -278,13 +278,13 @@ public class CategoriaResourceTest extends ConfigurationResourceTests {
 
     @Test
     public void deve_retornar_erro_ao_tentar_atualizar_categoria_com_id_inexistente(){
-        categoria.setId(ID_CAT_INEXISTENTE);
+        categoria.setId(ID_INEXISTENTE);
         given()
                 .request()
                 .contentType(ContentType.JSON)
                 .body(gson.toJson(categoria))
         .when()
-                .put(URN_CATEGORIA)
+                .put(URN)
         .then()
                 .log().body().and()
                 .statusCode(HttpStatus.NOT_FOUND.value())
@@ -314,7 +314,7 @@ public class CategoriaResourceTest extends ConfigurationResourceTests {
         given()
                 .pathParam("id", ID_CAT_SEM_PRODUTO)
         .when()
-                .delete(URN_CATEGORIA_ID)
+                .delete(URN_COM_ID)
         .then()
                 .statusCode(HttpStatus.NO_CONTENT.value());
     }
@@ -322,9 +322,9 @@ public class CategoriaResourceTest extends ConfigurationResourceTests {
     @Test
     public void deve_retornar_erro_ao_excluir_categoria_com_produtos() {
         given()
-                .pathParam("id", ID_CAT_EXISTENTE)
+                .pathParam("id", ID_EXISTENTE)
         .when()
-                .delete(URN_CATEGORIA_ID)
+                .delete(URN_COM_ID)
         .then()
                 .log().body()
                 .statusCode(HttpStatus.BAD_REQUEST.value())
@@ -335,7 +335,7 @@ public class CategoriaResourceTest extends ConfigurationResourceTests {
     @Test
     public void deve_retornar_erro_ao_excluir_categoria_inexistente() {
         given()
-                .pathParam("id", ID_CAT_INEXISTENTE)
+                .pathParam("id", ID_INEXISTENTE)
         .when()
                 .delete("/categorias/{id}")
         .then()
@@ -348,7 +348,7 @@ public class CategoriaResourceTest extends ConfigurationResourceTests {
     /**Busca paginada */
     @Test
     public void deve_retornar_todas_as_categorias_paginada() {
-        get(URN_CATEGORIA)
+        get(URN)
         .then()
                 .log().body()
                 .statusCode(HttpStatus.OK.value())
@@ -361,7 +361,7 @@ public class CategoriaResourceTest extends ConfigurationResourceTests {
     public void deve_retornar_as_categorias_que_contem_as_letras_os_paginado() {
         given()
                 .param("nome", "os")
-        .get(URN_CATEGORIA)
+        .get(URN)
         .then()
                 .log().body()
                 .statusCode(HttpStatus.OK.value())
@@ -376,7 +376,7 @@ public class CategoriaResourceTest extends ConfigurationResourceTests {
                 .param("linesPerPage", 3)
                 .param("orderBy", "id")
                 .param("direction", "DESC")
-        .get(URN_CATEGORIA)
+        .get(URN)
         .then()
                 .log().body()
                 .statusCode(HttpStatus.OK.value())
