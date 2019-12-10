@@ -6,6 +6,7 @@ import com.leomara.delivery.doce_sabor.repositories.ClienteRepository;
 import com.leomara.delivery.doce_sabor.repositories.EnderecoRepository;
 import com.leomara.delivery.doce_sabor.services.exception.DataIntegrityException;
 import com.leomara.delivery.doce_sabor.services.exception.ObjectNotFoundException;
+import static com.leomara.delivery.doce_sabor.until.Variables.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,12 +25,7 @@ import static org.hamcrest.Matchers.containsInAnyOrder;
 
 @SpringBootTest
 public class ClienteServiceTest {
-    private static final int ID_CLI = 1;
-    private static final String MENSAGEM_CLIENTE_NAO_ENCONTRADO = "Cliente não encontrado. ID: " + ID_CLI;
-    private static final String NOME_CLI = "Caio Ramos";
-    private static final String CPF_CLI = "23179425679";
-    private static final String EMAIL_CLI = "caiomarcos@roche.com";
-    private static final String SENHA_CLI = "123";
+
     private static final String MENSAGEM_ID_NULO = "Necessário um id para buscar.";
     private static final String TEL1 = "(19) 2987-8860";
     private static final String TEL2 = "(19) 98386-7407";
@@ -50,39 +46,39 @@ public class ClienteServiceTest {
 
     @BeforeEach
     void setUp() {
-        endereco = new Endereco(null, "Rua Flores", "300", "Jardim", "Apto 203", "38220-834", "Uberlândia", "MG", clienteAux);
+        endereco = new Endereco(null, LOGRADOURO, NUMERO, BAIRRO, COMPLEMENTO, CEP, CIDADE, UF, clienteAux);
 
-        cliente = new Cliente(ID_CLI, NOME_CLI, CPF_CLI, EMAIL_CLI, SENHA_CLI, endereco);
+        cliente = new Cliente(ID_CLIENTE_EXISTENTE, NOME_CLIENTE, CPF_CLIENTE, EMAIL_CLIENTE, SENHA_CLIENTE, endereco);
         cliente.setEndereco(endereco);
         cliente.getTelefones().addAll(Arrays.asList(TEL1, TEL2));
 
-        clienteAux = new Cliente(ID_CLI, NOME_CLI, CPF_CLI, EMAIL_CLI, SENHA_CLI, null);
+        clienteAux = new Cliente(ID_CLIENTE_EXISTENTE, NOME_CLIENTE, CPF_EXISTENTE, EMAIL_EXISTENTE, SENHA_CLIENTE, null);
 
-        when(repository.findById(ID_CLI)).thenReturn(Optional.of(cliente));
-        when(repository.findById(ID_CLI + 1)).thenReturn(Optional.of(cliente));
+        when(repository.findById(ID_CLIENTE_EXISTENTE)).thenReturn(Optional.of(cliente));
+        when(repository.findById(ID_CLIENTE_EXISTENTE + 1)).thenReturn(Optional.of(cliente));
         when(repository.save(cliente)).thenReturn(cliente);
-        when(repository.findByCpf(CPF_CLI)).thenReturn(Optional.empty());
-        when(repository.findByEmail(EMAIL_CLI)).thenReturn(Optional.empty());
+        when(repository.findByCpf(CPF_CLIENTE)).thenReturn(Optional.empty());
+        when(repository.findByEmail(EMAIL_CLIENTE)).thenReturn(Optional.empty());
     }
 
     /** Método find */
     @Test
      public void deve_retornar_um_cliente_pelo_id() {
-        Cliente cl = sut.find(ID_CLI);
-        verify(repository).findById(ID_CLI);
+        Cliente cl = sut.find(ID_CLIENTE_EXISTENTE);
+        verify(repository).findById(ID_CLIENTE_EXISTENTE);
         assertAll("Deve retornar um cliente",
-                    () -> assertEquals(NOME_CLI, cl.getNome()),
-                () -> assertEquals(ID_CLI, cl.getId()),
-                () -> assertEquals(CPF_CLI, cl.getCpf()),
-                () -> assertEquals(EMAIL_CLI, cl.getEmail()),
-                () -> assertEquals(SENHA_CLI, cl.getSenha()));
+                    () -> assertEquals(NOME_CLIENTE, cl.getNome()),
+                () -> assertEquals(ID_CLIENTE_EXISTENTE, cl.getId()),
+                () -> assertEquals(CPF_CLIENTE, cl.getCpf()),
+                () -> assertEquals(EMAIL_CLIENTE, cl.getEmail()),
+                () -> assertEquals(SENHA_CLIENTE, cl.getSenha()));
     }
 
     @Test
     public void deve_retornar_excecao_ao_nao_encontrar_id() {
-        when(repository.findById(ID_CLI)).thenReturn(Optional.empty());
-        exception = assertThrows(ObjectNotFoundException.class, () -> sut.find(ID_CLI));
-        assertEquals(MENSAGEM_CLIENTE_NAO_ENCONTRADO, exception.getMessage());
+        when(repository.findById(ID_CLIENTE_EXISTENTE)).thenReturn(Optional.empty());
+        exception = assertThrows(ObjectNotFoundException.class, () -> sut.find(ID_CLIENTE_EXISTENTE));
+        assertEquals(ERRO_CLIENTE_NAO_ENCONTRADO, exception.getMessage());
     }
 
     @Test
@@ -100,26 +96,28 @@ public class ClienteServiceTest {
         verify(repository).save(cliente);
         verify(repositoryEndereco).save(endereco);
         assertAll("Deve inserir um cliente com sucesso",
-                    () -> assertEquals(CPF_CLI, cl.getCpf()),
-                    () -> assertEquals(EMAIL_CLI, cl.getEmail()),
+                    () -> assertEquals(CPF_CLIENTE, cl.getCpf()),
+                    () -> assertEquals(EMAIL_CLIENTE, cl.getEmail()),
                     () -> assertThat(cl.getTelefones(), containsInAnyOrder(TEL1,TEL2)),
-                    () -> assertEquals("Rua Flores", cl.getEndereco().getLogradouro()),
-                () -> assertEquals("300", cl.getEndereco().getNumero()));
+                    () -> assertEquals(LOGRADOURO, cl.getEndereco().getLogradouro()),
+                () -> assertEquals(NUMERO, cl.getEndereco().getNumero()));
 
     }
 
     @Test
     public void deve_retornar_excecao_ao_inserir_cliente_com_o_mesmo_cpf() {
-        when(repository.findByCpf(CPF_CLI)).thenReturn(Optional.of(cliente));
+        when(repository.findByCpf(CPF_EXISTENTE)).thenReturn(Optional.of(clienteAux));
+        cliente.setCpf(CPF_EXISTENTE);
         exception = assertThrows(DataIntegrityException.class, () -> sut.insert(cliente));
-        assertEquals("O CPF " + cliente.getCpf() + " já esta cadastrado.", exception.getMessage());
+        assertEquals(ERRO_CPF_CADASTRADO, exception.getMessage());
     }
 
     @Test
     public void deve_retornar_excecao_ao_inserir_cliente_com_o_mesmo_email() {
-        when(repository.findByEmail(EMAIL_CLI)).thenReturn(Optional.of(cliente));
+        when(repository.findByEmail(EMAIL_EXISTENTE)).thenReturn(Optional.of(clienteAux));
+        cliente.setEmail(EMAIL_EXISTENTE);
         exception = assertThrows(DataIntegrityException.class, () -> sut.insert(cliente));
-        assertEquals("O email " + cliente.getEmail() + " já esta cadastrado.", exception.getMessage());
+        assertEquals(ERRO_EMAIL_CADASTRADO, exception.getMessage());
     }
 
     /** Método update */
@@ -129,30 +127,32 @@ public class ClienteServiceTest {
         verify(repository).save(cliente);
         verify(repositoryEndereco).save(endereco);
         assertAll("Deve inserir um cliente com sucesso",
-                () -> assertEquals(ID_CLI, cl.getId()),
-                () -> assertEquals(CPF_CLI, cl.getCpf()),
+                () -> assertEquals(ID_CLIENTE_EXISTENTE, cl.getId()),
+                () -> assertEquals(CPF_CLIENTE, cl.getCpf()),
                 () -> assertThat(cl.getTelefones(), containsInAnyOrder(TEL1,TEL2)));
     }
     @Test
     public void deve_retornar_excecao_ao_tentar_atualizar_com_id_inexistente() {
-        when(repository.findById(ID_CLI)).thenReturn(Optional.empty());
+        when(repository.findById(ID_CLIENTE_EXISTENTE)).thenReturn(Optional.empty());
         exception = assertThrows(ObjectNotFoundException.class, () -> sut.update(cliente));
-        assertEquals("Cliente não encontrado. ID: " + ID_CLI, exception.getMessage());
+        assertEquals(ERRO_CLIENTE_NAO_ENCONTRADO, exception.getMessage());
     }
 
     @Test
     public void  deve_retornar_excecao_ao_atualizar_com_cpf_ja_existente() {
-        when(repository.findByCpf(CPF_CLI)).thenReturn(Optional.of(clienteAux));
-        cliente.setId(ID_CLI + 1);
+        when(repository.findByCpf(CPF_EXISTENTE)).thenReturn(Optional.of(clienteAux));
+        cliente.setId(ID_CLIENTE_EXISTENTE + 1);
+        cliente.setCpf(CPF_EXISTENTE);
         exception = assertThrows(DataIntegrityException.class, () -> sut.update(cliente));
-        assertEquals("O CPF " + cliente.getCpf() + " já esta cadastrado.", exception.getMessage());
+        assertEquals(ERRO_CPF_CADASTRADO, exception.getMessage());
     }
 
     @Test
     public void deve_retornar_excecao_ao_atualizar_com_email_ja_existente() {
-        when(repository.findByEmail(EMAIL_CLI)).thenReturn(Optional.of(clienteAux));
-        cliente.setId(ID_CLI + 1);
+        when(repository.findByEmail(EMAIL_EXISTENTE)).thenReturn(Optional.of(clienteAux));
+        cliente.setId(ID_CLIENTE_EXISTENTE + 1);
+        cliente.setEmail(EMAIL_EXISTENTE);
         exception = assertThrows(DataIntegrityException.class, () -> sut.update(cliente));
-        assertEquals("O email " + cliente.getEmail() + " já esta cadastrado.", exception.getMessage());
+        assertEquals(ERRO_EMAIL_CADASTRADO, exception.getMessage());
     }
 }
