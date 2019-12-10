@@ -38,12 +38,8 @@ public class CategoriaServiceTest {
     private Produto p1;
     private Produto p2;
     private Page<Categoria> page;
-
-
+    
     private static final String FILTER = "x";
-
-    //Paginação
-
 
     @BeforeEach
     public void setUp() {
