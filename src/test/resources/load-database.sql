@@ -5,15 +5,15 @@ INSERT INTO categoria (id, nome) VALUES(3, 'Pães');
 INSERT INTO categoria (id, nome) VALUES(4, 'Bolos');
 
 
-INSERT INTO cliente (id, cpf, email, nome, senha) VALUES(1, '698.112.913-22', 'luciabc@tiger.com', 'Lúcia Benedita Cardoso', 'rfq6b2Sc5h');
-INSERT INTO cliente (id, cpf, email, nome, senha) VALUES(2, '942.026.773-31', 'gustavo@vitacard.com.br', 'Gustavo Victor Ricardo Ferreira', 'CuxsdiEBLJ');
-INSERT INTO cliente (id, cpf, email, nome, senha) VALUES(3, '231.794.256-79', 'caiomarcos@roche.com', 'Caio Marcos João Ramos', 'nUguEdLQD2');
-INSERT INTO cliente (id, cpf, email, nome, senha) VALUES(4, '220.888.474-48', 'deboraisadora@girocenter.com.br', 'Débora Isadora Silveira', 'Nm2PgsJ6bj');
+INSERT INTO cliente (id, cpf, email, nome, senha) VALUES(1, '69811291322', 'luciabc@tiger.com', 'Lúcia Benedita Cardoso', 'rfq6b2Sc5h');
+INSERT INTO cliente (id, cpf, email, nome, senha) VALUES(2, '94202677331', 'gustavo@vitacard.com.br', 'Gustavo Victor Ricardo Ferreira', 'CuxsdiEBLJ');
+INSERT INTO cliente (id, cpf, email, nome, senha) VALUES(3, '23179425679', 'caiomarcos@roche.com', 'Caio Marcos João Ramos', 'nUguEdLQD2');
+INSERT INTO cliente (id, cpf, email, nome, senha) VALUES(4, '22088847448', 'deboraisadora@girocenter.com.br', 'Débora Isadora Silveira', 'Nm2PgsJ6bj');
 
 
-INSERT INTO empresa (id, cnpj, email, nome_fantasia, senha) VALUES(1, '96.561.442/0001-86', 'contact@acrestaurante.com.br', 'Alícia e Cauã Restaurante ME', 'CuxsdiEBLJ');
-INSERT INTO empresa (id, cnpj, email, nome_fantasia, senha) VALUES(2, '36.112.464/0001-37', 'contact@saborcaseiro.com.br', 'Sabor Caseiro', 'Nm2PgsJ6bj');
-INSERT INTO empresa (id, cnpj, email, nome_fantasia, senha) VALUES(3, '24.667.907/0001-77', 'contact@doceSabor.com.br', 'Doce Sabor', 'rfq6b2Sc5h');
+INSERT INTO empresa (id, cnpj, email, nome_fantasia, senha) VALUES(1, '96561442000186', 'contact@acrestaurante.com.br', 'Alícia e Cauã Restaurante ME', 'CuxsdiEBLJ');
+INSERT INTO empresa (id, cnpj, email, nome_fantasia, senha) VALUES(2, '36112464000137', 'contact@saborcaseiro.com.br', 'Sabor Caseiro', 'Nm2PgsJ6bj');
+INSERT INTO empresa (id, cnpj, email, nome_fantasia, senha) VALUES(3, '24667907000177', 'contact@doceSabor.com.br', 'Doce Sabor', 'rfq6b2Sc5h');
 
 
 INSERT INTO endereco (bairro, cep, cidade, complemento, logradouro, numero, uf, cliente_id)
