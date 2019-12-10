@@ -39,7 +39,6 @@ public class ClienteService {
             throw new DataIntegrityException("O email " + cliente.getEmail() + " já esta cadastrado.");
 
         cliente = repo.save(cliente);
-        repoEnd.save(cliente.getEndereco());
         return cliente;
     }
 
