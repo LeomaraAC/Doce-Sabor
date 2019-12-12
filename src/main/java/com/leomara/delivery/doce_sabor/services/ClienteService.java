@@ -4,10 +4,12 @@ import com.leomara.delivery.doce_sabor.domain.Cliente;
 import com.leomara.delivery.doce_sabor.domain.Endereco;
 import com.leomara.delivery.doce_sabor.dto.ClienteDTO;
 import com.leomara.delivery.doce_sabor.repositories.ClienteRepository;
-import com.leomara.delivery.doce_sabor.repositories.EnderecoRepository;
 import com.leomara.delivery.doce_sabor.services.exception.DataIntegrityException;
 import com.leomara.delivery.doce_sabor.services.exception.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -70,5 +72,10 @@ public class ClienteService {
     public void delete(Integer id) {
         find(id);
         repo.deleteById(id);
+    }
+
+    public Page<Cliente> findPage(Integer page, Integer linesPerPage, String orderBy, String direction, String filterNome) {
+        PageRequest request = PageRequest.of(page, linesPerPage, Sort.Direction.valueOf(direction),orderBy);
+        return repo.filter(filterNome, request);
     }
 }

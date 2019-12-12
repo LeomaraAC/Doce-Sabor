@@ -3,15 +3,18 @@ package com.leomara.delivery.doce_sabor.services;
 import com.leomara.delivery.doce_sabor.domain.Cliente;
 import com.leomara.delivery.doce_sabor.domain.Endereco;
 import com.leomara.delivery.doce_sabor.repositories.ClienteRepository;
-import com.leomara.delivery.doce_sabor.repositories.EnderecoRepository;
 import com.leomara.delivery.doce_sabor.services.exception.DataIntegrityException;
 import com.leomara.delivery.doce_sabor.services.exception.ObjectNotFoundException;
+
+import static com.leomara.delivery.doce_sabor.until.variables.CategoriaVariables.ORDER_BY;
 import static com.leomara.delivery.doce_sabor.until.variables.ClienteVariables.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 
 import java.util.Arrays;
 import java.util.Optional;
@@ -35,9 +38,6 @@ public class ClienteServiceTest {
 
     @MockBean
     private ClienteRepository repository;
-
-    @MockBean
-    private EnderecoRepository repositoryEndereco;
 
     private Cliente cliente;
     private Cliente clienteAux;
@@ -167,5 +167,24 @@ public class ClienteServiceTest {
     public void deve_chamar_o_metodo_delete_do_repositorio() {
         sut.delete(ID_EXISTENTE);
         verify(repository).deleteById(ID_EXISTENTE);
+    }
+
+    /** Método para filtrar */
+    @Test
+    public void deve_chamar_a_funcao_filter_no_repositorio() {
+        sut.findPage(PAGE, LINES_PER_PAGE, ORDER_BY, DIRECTION, "");
+        verify(repository).filter("", PAGE_REQUEST);
+    }
+
+    @Test
+    public void deve_retornar_um_cliente_filtrado_e_paginado() {
+        Page<Cliente> page = new PageImpl<>(Arrays.asList(cliente));
+        when(repository.filter(cliente.getNome(), PAGE_REQUEST)).thenReturn(page);
+
+        Page<Cliente> clientes = sut.findPage(PAGE, LINES_PER_PAGE, ORDER_BY, DIRECTION, cliente.getNome());
+
+        assertAll("Deve retornar cliente filtrado e paginado",
+                () -> assertEquals(page.getTotalElements(),clientes.getTotalElements()),
+                () -> assertEquals(page.getContent().get(0).getCpf(), clientes.getContent().get(0).getCpf()));
     }
 }
