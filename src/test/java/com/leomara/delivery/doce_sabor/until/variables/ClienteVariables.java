@@ -30,6 +30,7 @@ public class ClienteVariables extends Variables {
 
     /** NOME */
     public static final String NOME = "Augusto Pedro Breno Aparício";
+    public static final String NOME_EXISTE = "Lúcia Benedita Cardoso";
     public static final String STRING_FILTRO = "ira";
 
     public static final String SENHA = "sNcIlx9P5m";
