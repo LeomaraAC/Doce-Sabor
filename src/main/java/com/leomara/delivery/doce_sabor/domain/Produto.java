@@ -34,11 +34,11 @@ public class Produto {
     private Categoria categoria;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "id.produto")
+    @OneToMany(mappedBy = "id.produto", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Classificacao> classificacaos = new ArrayList<>();
 
     @JsonIgnore
-    @OneToMany(mappedBy = "id.produto")
+    @OneToMany(mappedBy = "id.produto", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ItensPedido> itensPedidos = new ArrayList<>();
 
     public Produto(Integer id, String nome, Double valor, Empresa empresa, Categoria categoria) {

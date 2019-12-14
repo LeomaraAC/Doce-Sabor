@@ -24,7 +24,7 @@ public class Empresa {
     private String email;
     private String senha;
 
-    @OneToMany(mappedBy = "empresa")
+    @OneToMany(mappedBy = "empresa", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Produto> produtos = new ArrayList<>();
 
     public Empresa(Integer id, String nome_fantasia, String cnpj, String email, String senha) {

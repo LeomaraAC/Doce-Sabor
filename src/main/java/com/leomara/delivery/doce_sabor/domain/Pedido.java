@@ -27,7 +27,7 @@ public class Pedido {
     @JoinColumn(name = "cliente_id")
     private Cliente cliente;
 
-    @OneToMany(mappedBy = "id.pedido")
+    @OneToMany(mappedBy = "id.pedido", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ItensPedido> itensPedidos = new ArrayList<>();
 
     public Pedido(Integer id, Date data, Cliente cliente) {

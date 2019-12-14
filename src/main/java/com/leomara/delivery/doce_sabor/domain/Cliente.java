@@ -29,11 +29,11 @@ public class Cliente {
     private Endereco endereco;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Pedido> pedidos = new ArrayList<>();
 
     @JsonIgnore
-    @OneToMany(mappedBy = "id.cliente", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "id.cliente", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Classificacao> classificacaos = new ArrayList<>();
 
     public Cliente(Integer id, String nome, String cpf, String email, String senha, Endereco endereco) {
