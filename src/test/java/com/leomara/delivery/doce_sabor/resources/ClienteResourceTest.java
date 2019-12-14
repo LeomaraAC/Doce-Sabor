@@ -158,4 +158,28 @@ public class ClienteResourceTest extends ConfigurationResourceTests {
                 .body("status", equalTo(HttpStatus.BAD_REQUEST.value()),
                         "message", equalTo(ERRO_EMAIL_CADASTRADO));
     }
+
+    /** Método Delete */
+    @Test
+    public void deve_retornar_excessao_ao_excluir_cliente_com_id_inexistente() {
+        given()
+                .pathParam("id", ID_INEXISTENTE)
+        .when()
+                .delete(URN_ID)
+        .then()
+                .statusCode(HttpStatus.NOT_FOUND.value())
+                .body("status", equalTo(HttpStatus.NOT_FOUND.value()),
+                        "message", equalTo(ERRO_CLIENTE_NAO_ENCONTRADO));
+    }
+
+    @Test
+    public void deve_deletar_cliente_com_sucesso() {
+        given()
+                .pathParam("id",ID_EXISTENTE)
+        .when()
+                .delete(URN_ID)
+        .then()
+                .log().body().and()
+                .statusCode(HttpStatus.NO_CONTENT.value());
+    }
 }
