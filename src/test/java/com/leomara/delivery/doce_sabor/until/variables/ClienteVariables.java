@@ -19,6 +19,7 @@ public class ClienteVariables extends Variables {
     /** ID */
     public static final Integer ID_NOVO = 5;
     public static final Integer ID_EXISTENTE = 1;
+    public static final Integer ID_EXISTENTE_3 = 3;
     public static final Integer ID_INEXISTENTE = 20;
 
     /** CPF */

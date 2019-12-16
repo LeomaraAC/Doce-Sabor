@@ -182,4 +182,77 @@ public class ClienteResourceTest extends ConfigurationResourceTests {
                 .log().body().and()
                 .statusCode(HttpStatus.NO_CONTENT.value());
     }
+
+    /** Método update */
+    @Test
+    public void deve_retornar_excessao_ao_tentar_atualizar_com_id_inexistente() {
+        cliente.setId(ID_INEXISTENTE);
+        given()
+                .request()
+                .contentType(ContentType.JSON)
+                .body(gson.toJson(cliente))
+        .when()
+                .put(URN)
+        .then()
+                .statusCode(HttpStatus.NOT_FOUND.value())
+                .body("status", equalTo(HttpStatus.NOT_FOUND.value()),
+                        "message", equalTo(ERRO_CLIENTE_NAO_ENCONTRADO));
+    }
+
+    @Test
+    public void deve_retornar_excessao_ao_tentar_atualizar_com_cpf_existente() {
+        cliente.setCpf(CPF_EXISTENTE);
+        cliente.setId(ID_EXISTENTE_3);
+
+        given()
+                .request()
+                .contentType(ContentType.JSON)
+                .body(gson.toJson(cliente))
+        .when()
+                .put(URN)
+        .then()
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .body("status", equalTo(HttpStatus.BAD_REQUEST.value()),
+                        "message", equalTo(ERRO_CPF_CADASTRADO));
+    }
+
+    @Test
+    public void deve_retornar_excessao_ao_tentar_atualizar_com_email_existente() {
+        cliente.setEmail(EMAIL_EXISTENTE);
+        cliente.setId(ID_EXISTENTE_3);
+
+        given()
+                .request()
+                .contentType(ContentType.JSON)
+                .body(gson.toJson(cliente))
+        .when()
+                .put(URN)
+        .then()
+                .log().body().and()
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .body("status", equalTo(HttpStatus.BAD_REQUEST.value()),
+                        "message", equalTo(ERRO_EMAIL_CADASTRADO));
+    }
+
+    @Test
+    public void deve_atualizar_com_sucesso() {
+        cliente.setId(ID_EXISTENTE);
+        given()
+                .request()
+                .contentType(ContentType.JSON)
+                .body(gson.toJson(cliente))
+        .when()
+                .put(URN)
+        .then()
+                .log().body().and()
+                .statusCode(HttpStatus.OK.value())
+                .body("id", equalTo(ID_EXISTENTE),
+                        "nome", equalTo(NOME),
+                        "cpf", equalTo(CPF),
+                        "senha", equalTo(SENHA),
+                        "email", equalTo(EMAIL),
+                        "telefones", contains(TELEFONE),
+                        "endereco.cidade", equalTo(CIDADE),
+                        "endereco.logradouro", equalTo(LOGRADOURO));
+    }
 }
