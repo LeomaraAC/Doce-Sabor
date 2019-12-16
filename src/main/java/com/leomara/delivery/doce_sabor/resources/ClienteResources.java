@@ -26,9 +26,10 @@ public class ClienteResources {
         return ResponseEntity.created(uri).body(cliente);
     }
 
-    @PutMapping
-    public ResponseEntity<Cliente> update(@Valid @RequestBody ClienteDTO objDTO) {
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<Cliente> update(@PathVariable Integer id, @Valid @RequestBody ClienteDTO objDTO) {
         Cliente cliente = service.fromDTO(objDTO);
+        cliente.setId(id);
         cliente = service.update(cliente);
         return ResponseEntity.ok(cliente);
     }

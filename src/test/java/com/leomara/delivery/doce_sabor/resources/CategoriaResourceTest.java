@@ -211,8 +211,9 @@ public class CategoriaResourceTest extends ConfigurationResourceTests {
                 .request()
                 .contentType(ContentType.JSON)
                 .body(gson.toJson(categoria))
+                .pathParam("id", ID_EXISTENTE)
         .when()
-                .put(URN)
+                .put(URN_COM_ID)
         .then()
                 .log().body().and()
                 .statusCode(HttpStatus.OK.value())
@@ -229,8 +230,9 @@ public class CategoriaResourceTest extends ConfigurationResourceTests {
                 .request()
                 .contentType(ContentType.JSON)
                 .body(gson.toJson(categoria))
+                .pathParam("id", ID_EXISTENTE_3)
         .when()
-                .put(URN)
+                .put(URN_COM_ID)
         .then()
                 .log().body().and()
                 .statusCode(HttpStatus.BAD_REQUEST.value())
@@ -246,8 +248,9 @@ public class CategoriaResourceTest extends ConfigurationResourceTests {
                 .request()
                 .contentType(ContentType.JSON)
                 .body(gson.toJson(categoria))
+                .pathParam("id", ID_EXISTENTE)
         .when()
-                .put(URN)
+                .put(URN_COM_ID)
         .then()
                 .log().body().and()
                 .statusCode(HttpStatus.BAD_REQUEST.value())
@@ -265,8 +268,9 @@ public class CategoriaResourceTest extends ConfigurationResourceTests {
                 .request()
                 .contentType(ContentType.JSON)
                 .body(gson.toJson(categoria))
+                .pathParam("id", ID_EXISTENTE)
         .when()
-                .put(URN)
+                .put(URN_COM_ID)
         .then()
                 .log().body().and()
                 .statusCode(HttpStatus.BAD_REQUEST.value())
@@ -283,29 +287,14 @@ public class CategoriaResourceTest extends ConfigurationResourceTests {
                 .request()
                 .contentType(ContentType.JSON)
                 .body(gson.toJson(categoria))
+                .pathParam("id", ID_INEXISTENTE)
         .when()
-                .put(URN)
+                .put(URN_COM_ID)
         .then()
                 .log().body().and()
                 .statusCode(HttpStatus.NOT_FOUND.value())
                 .body("status", equalTo(HttpStatus.NOT_FOUND.value()),
                         "message", equalTo(ERRO_CAT_NAO_ENCONTRADA));
-    }
-
-    @Test
-    public void deve_retornar_erro_ao_tentar_atualizar_categoria_com_id_nulo(){
-        categoria.setId(null);
-        given()
-                .request()
-                .contentType(ContentType.JSON)
-                .body(gson.toJson(categoria))
-        .when()
-                .put("/categorias")
-        .then()
-                .log().body().and()
-                .statusCode(HttpStatus.BAD_REQUEST.value())
-                .body("status", equalTo(HttpStatus.BAD_REQUEST.value()),
-                        "message", equalTo(ERRO_ID_OBRIGATORIO));
     }
 
     /** Delete */
