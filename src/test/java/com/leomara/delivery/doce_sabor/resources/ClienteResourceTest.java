@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 
 import java.util.Arrays;
 
+import static io.restassured.RestAssured.get;
 import static org.hamcrest.Matchers.*;
 
 import static io.restassured.RestAssured.given;
@@ -280,7 +281,6 @@ public class ClienteResourceTest extends ConfigurationResourceTests {
         .when()
                 .get(URN_ID)
         .then()
-                .log().body().and()
                 .statusCode(HttpStatus.OK.value())
                 .body("id", equalTo(ID_EXISTENTE),
                         "cpf", equalTo(CPF_EXISTENTE),
@@ -288,5 +288,60 @@ public class ClienteResourceTest extends ConfigurationResourceTests {
                         "nome", equalTo(NOME_EXISTE),
                         "endereco.bairro", equalTo(BAIRRO_EXISTENTE),
                         "telefones", containsInAnyOrder(TELEFONES_EXISTENTES.toArray()));
+    }
+
+    /** Busca paginada */
+    @Test
+    public void deve_retornar_todos_os_clientes_paginados(){
+        get(URN)
+        .then()
+                .statusCode(HttpStatus.OK.value())
+                .body("content.cpf", containsInAnyOrder(CPF_TODOS_CLIENTES.toArray()),
+                        "totalElements", equalTo(CPF_TODOS_CLIENTES.size()),
+                        "empty", equalTo(false));
+    }
+
+    @Test
+    public void deve_retornar_os_clientes_que_contem_ira_no_nome(){
+        given()
+                .param("filterNome", "ira")
+        .when()
+                .get(URN)
+        .then()
+                .statusCode(HttpStatus.OK.value())
+                .body("content.cpf", containsInAnyOrder(CPF_CLIENTES_IRA.toArray()),
+                        "totalElements", equalTo(CPF_CLIENTES_IRA.size()));
+    }
+
+    @Test
+    public void deve_retornar_content_vazio_ao_buscar_clientes_que_contem_itd() {
+        given()
+                .param("filterNome", "itd")
+        .when()
+                .get(URN)
+        .then()
+                .statusCode(HttpStatus.OK.value())
+                .body("content", is(empty()),
+                        "totalElements", equalTo(0));
+    }
+
+    @Test
+    public void deve_retornar_a_paginacao_com_1_cliente_por_pagina_ordenado_pelo_id_decrescente_e_na_pagina_2(){
+        given()
+                .param("page", 2)
+                .param("linesPerPage", 1)
+                .param("orderBy", "id")
+                .param("direction", "DESC")
+        .when()
+                .get(URN)
+        .then()
+                .log().body().and()
+                .statusCode(HttpStatus.OK.value())
+                .body("content.cpf", contains(CPF_EXISTENTE_2),
+                        "last", equalTo(false),
+                        "totalPages", equalTo(4),
+                        "first", equalTo(false),
+                        "numberOfElements", equalTo(1),
+                        "empty", equalTo(false));
     }
 }

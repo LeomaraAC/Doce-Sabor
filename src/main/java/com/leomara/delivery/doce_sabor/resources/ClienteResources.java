@@ -4,6 +4,7 @@ import com.leomara.delivery.doce_sabor.domain.Cliente;
 import com.leomara.delivery.doce_sabor.dto.ClienteDTO;
 import com.leomara.delivery.doce_sabor.services.ClienteService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -17,6 +18,16 @@ public class ClienteResources {
 
     @Autowired
     ClienteService service;
+
+    @GetMapping
+    public ResponseEntity<Page<Cliente>> findAll(@RequestParam(value = "filterNome", defaultValue = "") String filterNome,
+                                                 @RequestParam(value = "page", defaultValue = "0") Integer page,
+                                                 @RequestParam(value = "linesPerPage", defaultValue = "25") Integer linesPerPage,
+                                                 @RequestParam(value = "orderBy", defaultValue = "nome") String orderBy,
+                                                 @RequestParam(value = "direction", defaultValue = "ASC") String direction) {
+        Page<Cliente> clientes = service.findPage(page,linesPerPage,orderBy, direction, filterNome);
+        return ResponseEntity.ok(clientes);
+    }
 
     @GetMapping(value = "/{id}")
     public ResponseEntity<Cliente> find(@PathVariable Integer id) {

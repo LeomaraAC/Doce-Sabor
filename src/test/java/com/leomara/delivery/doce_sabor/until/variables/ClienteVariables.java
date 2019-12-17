@@ -25,6 +25,7 @@ public class ClienteVariables extends Variables {
 
     /** CPF */
     public static final String CPF_EXISTENTE = "69811291322";
+    public static final String CPF_EXISTENTE_2 = "94202677331";
     public static final String CPF = "06433861652";
 
     /** EMAIL */
