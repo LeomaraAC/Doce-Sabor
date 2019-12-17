@@ -15,6 +15,7 @@ public class ClienteVariables extends Variables {
     /** LISTA */
     public static List CPF_TODOS_CLIENTES = Arrays.asList("69811291322", "94202677331", "23179425679", "22088847448");
     public static List CPF_CLIENTES_IRA = Arrays.asList("22088847448", "94202677331");
+    public static final List<String> TELEFONES_EXISTENTES = Arrays.asList("(19) 2987-8860", "(19) 98386-7407");
 
     /** ID */
     public static final Integer ID_NOVO = 5;
@@ -42,6 +43,7 @@ public class ClienteVariables extends Variables {
     public static final String LOGRADOURO = "Vila Alice";
     public static final String NUMERO = "178";
     public static final String BAIRRO = "Centro";
+    public static final String BAIRRO_EXISTENTE = "Sítios de Recreio Gramado";
     public static final String COMPLEMENTO = "Apto 203";
     public static final String CEP = "58300-440";
     public static final String CIDADE = "Santa Rita";

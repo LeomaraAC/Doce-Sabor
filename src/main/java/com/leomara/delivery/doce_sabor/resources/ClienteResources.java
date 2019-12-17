@@ -18,6 +18,12 @@ public class ClienteResources {
     @Autowired
     ClienteService service;
 
+    @GetMapping(value = "/{id}")
+    public ResponseEntity<Cliente> find(@PathVariable Integer id) {
+        Cliente cliente = service.find(id);
+        return ResponseEntity.ok(cliente);
+    }
+
     @PostMapping
     public ResponseEntity<Cliente> insert(@Valid @RequestBody ClienteDTO objDTO) {
         Cliente cliente = service.fromDTO(objDTO);

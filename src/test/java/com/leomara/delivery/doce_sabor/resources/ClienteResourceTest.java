@@ -259,4 +259,34 @@ public class ClienteResourceTest extends ConfigurationResourceTests {
                         "endereco.cidade", equalTo(CIDADE),
                         "endereco.logradouro", equalTo(LOGRADOURO));
     }
+
+    /** Método  find */
+    @Test
+    public void deve_retornar_erro_ao_nao_encontrar_cliente_pelo_id() {
+        given()
+                .pathParam("id", ID_INEXISTENTE)
+        .when()
+                .get(URN_ID)
+        .then()
+                .statusCode(HttpStatus.NOT_FOUND.value())
+                .body("status", equalTo(HttpStatus.NOT_FOUND.value()),
+                        "message", equalTo(ERRO_CLIENTE_NAO_ENCONTRADO));
+    }
+
+    @Test
+    public void deve_retornar_cliente_pelo_id() {
+        given()
+                .pathParam("id", ID_EXISTENTE)
+        .when()
+                .get(URN_ID)
+        .then()
+                .log().body().and()
+                .statusCode(HttpStatus.OK.value())
+                .body("id", equalTo(ID_EXISTENTE),
+                        "cpf", equalTo(CPF_EXISTENTE),
+                        "email", equalTo(EMAIL_EXISTENTE),
+                        "nome", equalTo(NOME_EXISTE),
+                        "endereco.bairro", equalTo(BAIRRO_EXISTENTE),
+                        "telefones", containsInAnyOrder(TELEFONES_EXISTENTES.toArray()));
+    }
 }
