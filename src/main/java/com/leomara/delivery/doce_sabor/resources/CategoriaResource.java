@@ -3,6 +3,9 @@ package com.leomara.delivery.doce_sabor.resources;
 import com.leomara.delivery.doce_sabor.domain.Categoria;
 import com.leomara.delivery.doce_sabor.dto.CategoriaDTO;
 import com.leomara.delivery.doce_sabor.services.CategoriaService;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -19,13 +22,23 @@ public class CategoriaResource {
     @Autowired
     CategoriaService service;
 
-    @GetMapping(value = "/{id}")
+    @ApiOperation(value = "Retorna uma categoria")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Retorna uma categoria"),
+            @ApiResponse(code = 404, message = "Categoria não encontrada"),
+    })
+    @GetMapping(value = "/{id}", produces = "application/json")
     public ResponseEntity<Categoria> find(@PathVariable Integer id) {
         Categoria obj = service.find(id);
         return ResponseEntity.ok(obj);
     }
 
-    @PostMapping
+    @ApiOperation(value = "Cadastra uma categoria")
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "Categoria cadastrada"),
+            @ApiResponse(code = 400, message = "Erro de validação"),
+    })
+    @PostMapping(produces = "application/json", consumes = "application/json")
     public ResponseEntity<Categoria> insert(@Valid @RequestBody CategoriaDTO obj) {
         Categoria categoria = service.fromDTO(obj);
         categoria = service.insert(categoria);
@@ -33,7 +46,13 @@ public class CategoriaResource {
         return ResponseEntity.created(uri).body(categoria);
     }
 
-    @PutMapping(value = "/{id}")
+    @ApiOperation(value = "Atualiza uma categoria")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Categoria atualizada"),
+            @ApiResponse(code = 400, message = "Erro de validação"),
+            @ApiResponse(code = 404, message = "Categoria não encontrada"),
+    })
+    @PutMapping(value = "/{id}", produces = "application/json", consumes = "application/json")
     public ResponseEntity<Categoria> update (@PathVariable Integer id, @Valid @RequestBody CategoriaDTO obj) {
         Categoria categoria = service.fromDTO(obj);
         categoria.setId(id);
@@ -41,13 +60,22 @@ public class CategoriaResource {
         return ResponseEntity.ok(categoria);
     }
 
+    @ApiOperation(value = "Exclui uma categoria")
+    @ApiResponses(value = {
+            @ApiResponse(code = 204, message = "Categoria excluida"),
+            @ApiResponse(code = 404, message = "Categoria não encontrada"),
+    })
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Void> delete(@PathVariable Integer id) {
         service.delete(id);
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping
+    @ApiOperation(value = "Retornar uma lista de categorias")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Retorna a lista paginada de categorias")
+    })
+    @GetMapping(produces = "application/json")
     public ResponseEntity<Page<CategoriaDTO>> findAll( @RequestParam(value = "nome", defaultValue = "") String nome,
                                                     @RequestParam(value = "page", defaultValue = "0") Integer page,
                                                     @RequestParam(value = "linesPerPage", defaultValue = "25") Integer linesPerPage,
