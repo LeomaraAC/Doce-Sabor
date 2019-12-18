@@ -11,8 +11,8 @@ public class CategoriaVariables extends Variables {
 
 
     /** URN */
-    public static final String URN = "/categorias/";
-    public static final String URN_COM_ID = URN + "{id}";
+    public static final String URI = "/api/categorias/";
+    public static final String URI_COM_ID = URI + "{id}";
 
     /** Categoria */
     public static final Integer ID_EXISTENTE = 2;

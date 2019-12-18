@@ -1,11 +1,5 @@
 package com.leomara.delivery.doce_sabor.until;
 
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-
-import java.util.Arrays;
-import java.util.List;
-
 public class Variables {
     public static final String STRING_VAZIA_COM_ESPACO = "   ";
     public static final String STRING_VAZIA = "";

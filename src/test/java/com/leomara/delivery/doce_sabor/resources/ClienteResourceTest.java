@@ -51,14 +51,14 @@ public class ClienteResourceTest extends ConfigurationResourceTests {
                 .contentType(ContentType.JSON)
                 .body(gson.toJson(cliente))
         .when()
-                .post(URN)
+                .post(URI)
         .then()
                 .log().headers()
             .and()
                 .log().body()
             .and()
                 .statusCode(HttpStatus.CREATED.value())
-                .header("Location", equalTo("http://localhost:"+ porta + URN + ID_NOVO))
+                .header("Location", equalTo("http://localhost:"+ porta + URI + ID_NOVO))
                 .body("id", equalTo(ID_NOVO),
                         "nome", equalTo(NOME),
                         "cpf", equalTo(CPF),
@@ -77,7 +77,7 @@ public class ClienteResourceTest extends ConfigurationResourceTests {
                 .contentType(ContentType.JSON)
                 .body(gson.toJson(cliente))
         .when()
-                .post(URN)
+                .post(URI)
         .then()
                 .log().body()
             .and()
@@ -102,7 +102,7 @@ public class ClienteResourceTest extends ConfigurationResourceTests {
                 .contentType(ContentType.JSON)
                 .body(gson.toJson(clienteAux))
         .when()
-                .post(URN)
+                .post(URI)
         .then()
                 .log().body()
             .and()
@@ -121,7 +121,7 @@ public class ClienteResourceTest extends ConfigurationResourceTests {
                 .contentType(ContentType.JSON)
                 .body(gson.toJson(cliente))
         .when()
-                .post(URN)
+                .post(URI)
         .then()
                 .log().body().and()
                 .statusCode(HttpStatus.CREATED.value())
@@ -137,7 +137,7 @@ public class ClienteResourceTest extends ConfigurationResourceTests {
                 .contentType(ContentType.JSON)
                 .body(gson.toJson(cliente))
         .when()
-                .post(URN)
+                .post(URI)
         .then()
                 .log().body().and()
                 .statusCode(HttpStatus.BAD_REQUEST.value())
@@ -153,7 +153,7 @@ public class ClienteResourceTest extends ConfigurationResourceTests {
                 .contentType(ContentType.JSON)
                 .body(gson.toJson(cliente))
         .when()
-                .post(URN)
+                .post(URI)
         .then()
                 .statusCode(HttpStatus.BAD_REQUEST.value())
                 .body("status", equalTo(HttpStatus.BAD_REQUEST.value()),
@@ -166,7 +166,7 @@ public class ClienteResourceTest extends ConfigurationResourceTests {
         given()
                 .pathParam("id", ID_INEXISTENTE)
         .when()
-                .delete(URN_ID)
+                .delete(URI_COM_ID)
         .then()
                 .statusCode(HttpStatus.NOT_FOUND.value())
                 .body("status", equalTo(HttpStatus.NOT_FOUND.value()),
@@ -178,7 +178,7 @@ public class ClienteResourceTest extends ConfigurationResourceTests {
         given()
                 .pathParam("id",ID_EXISTENTE)
         .when()
-                .delete(URN_ID)
+                .delete(URI_COM_ID)
         .then()
                 .log().body().and()
                 .statusCode(HttpStatus.NO_CONTENT.value());
@@ -194,7 +194,7 @@ public class ClienteResourceTest extends ConfigurationResourceTests {
                 .body(gson.toJson(cliente))
                 .pathParam("id", ID_INEXISTENTE)
         .when()
-                .put(URN_ID)
+                .put(URI_COM_ID)
         .then()
                 .statusCode(HttpStatus.NOT_FOUND.value())
                 .body("status", equalTo(HttpStatus.NOT_FOUND.value()),
@@ -212,7 +212,7 @@ public class ClienteResourceTest extends ConfigurationResourceTests {
                 .body(gson.toJson(cliente))
                 .pathParam("id", ID_EXISTENTE_3)
         .when()
-                .put(URN_ID)
+                .put(URI_COM_ID)
         .then()
                 .statusCode(HttpStatus.BAD_REQUEST.value())
                 .body("status", equalTo(HttpStatus.BAD_REQUEST.value()),
@@ -230,7 +230,7 @@ public class ClienteResourceTest extends ConfigurationResourceTests {
                 .body(gson.toJson(cliente))
                 .pathParam("id", ID_EXISTENTE_3)
         .when()
-                .put(URN_ID)
+                .put(URI_COM_ID)
         .then()
                 .log().body().and()
                 .statusCode(HttpStatus.BAD_REQUEST.value())
@@ -247,7 +247,7 @@ public class ClienteResourceTest extends ConfigurationResourceTests {
                 .body(gson.toJson(cliente))
                 .pathParam("id", ID_EXISTENTE)
         .when()
-                .put(URN_ID)
+                .put(URI_COM_ID)
         .then()
                 .log().body().and()
                 .statusCode(HttpStatus.OK.value())
@@ -267,7 +267,7 @@ public class ClienteResourceTest extends ConfigurationResourceTests {
         given()
                 .pathParam("id", ID_INEXISTENTE)
         .when()
-                .get(URN_ID)
+                .get(URI_COM_ID)
         .then()
                 .statusCode(HttpStatus.NOT_FOUND.value())
                 .body("status", equalTo(HttpStatus.NOT_FOUND.value()),
@@ -279,7 +279,7 @@ public class ClienteResourceTest extends ConfigurationResourceTests {
         given()
                 .pathParam("id", ID_EXISTENTE)
         .when()
-                .get(URN_ID)
+                .get(URI_COM_ID)
         .then()
                 .statusCode(HttpStatus.OK.value())
                 .body("id", equalTo(ID_EXISTENTE),
@@ -293,7 +293,7 @@ public class ClienteResourceTest extends ConfigurationResourceTests {
     /** Busca paginada */
     @Test
     public void deve_retornar_todos_os_clientes_paginados(){
-        get(URN)
+        get(URI)
         .then()
                 .statusCode(HttpStatus.OK.value())
                 .body("content.cpf", containsInAnyOrder(CPF_TODOS_CLIENTES.toArray()),
@@ -306,7 +306,7 @@ public class ClienteResourceTest extends ConfigurationResourceTests {
         given()
                 .param("filterNome", "ira")
         .when()
-                .get(URN)
+                .get(URI)
         .then()
                 .statusCode(HttpStatus.OK.value())
                 .body("content.cpf", containsInAnyOrder(CPF_CLIENTES_IRA.toArray()),
@@ -318,7 +318,7 @@ public class ClienteResourceTest extends ConfigurationResourceTests {
         given()
                 .param("filterNome", "itd")
         .when()
-                .get(URN)
+                .get(URI)
         .then()
                 .statusCode(HttpStatus.OK.value())
                 .body("content", is(empty()),
@@ -333,7 +333,7 @@ public class ClienteResourceTest extends ConfigurationResourceTests {
                 .param("orderBy", "id")
                 .param("direction", "DESC")
         .when()
-                .get(URN)
+                .get(URI)
         .then()
                 .log().body().and()
                 .statusCode(HttpStatus.OK.value())

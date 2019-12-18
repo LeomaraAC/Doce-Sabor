@@ -4,16 +4,15 @@ package com.leomara.delivery.doce_sabor.resources;
 import com.google.gson.Gson;
 import com.leomara.delivery.doce_sabor.dto.CategoriaDTO;
 import com.leomara.delivery.doce_sabor.resources.config.ConfigurationResourceTests;
-import static com.leomara.delivery.doce_sabor.until.variables.CategoriaVariables.*;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
+import static com.leomara.delivery.doce_sabor.until.variables.CategoriaVariables.*;
 import static io.restassured.RestAssured.get;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
-import static org.hamcrest.Matchers.containsInAnyOrder;
 
 public class CategoriaResourceTest extends ConfigurationResourceTests {
 
@@ -32,7 +31,7 @@ public class CategoriaResourceTest extends ConfigurationResourceTests {
     public void deve_buscar_categoria_pelo_id(){
        given()
                .pathParam("id", ID_EXISTENTE)
-       .get(URN_COM_ID)
+       .get(URI_COM_ID)
        .then()
                .log().body().and()
                .statusCode(HttpStatus.OK.value())
@@ -45,7 +44,7 @@ public class CategoriaResourceTest extends ConfigurationResourceTests {
     public void deve_retornar_erro_ao_nao_encontrar_categoria() {
        given()
                .pathParam("id", ID_INEXISTENTE)
-       .get(URN_COM_ID)
+       .get(URI_COM_ID)
        .then()
                .log().body().and()
                .statusCode(HttpStatus.NOT_FOUND.value())
@@ -61,14 +60,14 @@ public class CategoriaResourceTest extends ConfigurationResourceTests {
                 .contentType(ContentType.JSON)
                 .body(gson.toJson(categoria))
         .when()
-                .post(URN)
+                .post(URI)
         .then()
                 .log().headers()
             .and()
                 .log().body()
             .and()
                 .statusCode(HttpStatus.CREATED.value())
-                .header("Location", equalTo("http://localhost:"+ porta + URN + ID_NOVO))
+                .header("Location", equalTo("http://localhost:"+ porta + URI + ID_NOVO))
                 .body("id", equalTo(ID_NOVO),
                         "nome",equalTo(NOME),
                         "produtos.nome", is(empty()));
@@ -83,7 +82,7 @@ public class CategoriaResourceTest extends ConfigurationResourceTests {
                 .contentType(ContentType.JSON)
                 .body(gson.toJson(categoria))
         .when()
-                .post(URN)
+                .post(URI)
         .then()
                 .log().body().and()
                 .statusCode(HttpStatus.BAD_REQUEST.value())
@@ -99,7 +98,7 @@ public class CategoriaResourceTest extends ConfigurationResourceTests {
                 .contentType(ContentType.JSON)
                 .body(gson.toJson(categoria))
         .when()
-                .post(URN)
+                .post(URI)
         .then()
                 .log().body().and()
                 .statusCode(HttpStatus.BAD_REQUEST.value())
@@ -117,7 +116,7 @@ public class CategoriaResourceTest extends ConfigurationResourceTests {
                 .contentType(ContentType.JSON)
                 .body(gson.toJson(categoria))
         .when()
-                .post("/categorias")
+                .post(URI)
         .then()
                 .log().body().and()
                 .statusCode(HttpStatus.BAD_REQUEST.value())
@@ -135,7 +134,7 @@ public class CategoriaResourceTest extends ConfigurationResourceTests {
                 .contentType(ContentType.JSON)
                 .body(gson.toJson(categoria))
         .when()
-                .post(URN)
+                .post(URI)
         .then()
                 .log().body().and()
                 .statusCode(HttpStatus.BAD_REQUEST.value())
@@ -153,7 +152,7 @@ public class CategoriaResourceTest extends ConfigurationResourceTests {
                 .contentType(ContentType.JSON)
                 .body(gson.toJson(categoria))
         .when()
-                .post(URN)
+                .post(URI)
         .then()
                 .log().body().and()
                 .statusCode(HttpStatus.BAD_REQUEST.value())
@@ -171,7 +170,7 @@ public class CategoriaResourceTest extends ConfigurationResourceTests {
                 .contentType(ContentType.JSON)
                 .body(gson.toJson(categoria))
         .when()
-                .post(URN)
+                .post(URI)
         .then()
                 .log().body().and()
                 .statusCode(HttpStatus.BAD_REQUEST.value())
@@ -190,14 +189,14 @@ public class CategoriaResourceTest extends ConfigurationResourceTests {
                 .contentType(ContentType.JSON)
                 .body(gson.toJson(categoria))
         .when()
-                .post(URN)
+                .post(URI)
         .then()
                 .log().headers()
             .and()
                 .log().body()
             .and()
                 .statusCode(HttpStatus.CREATED.value())
-                .header("Location", equalTo("http://localhost:"+ porta + URN + ID_NOVO))
+                .header("Location", equalTo("http://localhost:"+ porta + URI + ID_NOVO))
                 .body("id", equalTo(5),
                         "nome",equalTo(NOME),
                         "produtos.nome", is(empty()));
@@ -213,7 +212,7 @@ public class CategoriaResourceTest extends ConfigurationResourceTests {
                 .body(gson.toJson(categoria))
                 .pathParam("id", ID_EXISTENTE)
         .when()
-                .put(URN_COM_ID)
+                .put(URI_COM_ID)
         .then()
                 .log().body().and()
                 .statusCode(HttpStatus.OK.value())
@@ -232,7 +231,7 @@ public class CategoriaResourceTest extends ConfigurationResourceTests {
                 .body(gson.toJson(categoria))
                 .pathParam("id", ID_EXISTENTE_3)
         .when()
-                .put(URN_COM_ID)
+                .put(URI_COM_ID)
         .then()
                 .log().body().and()
                 .statusCode(HttpStatus.BAD_REQUEST.value())
@@ -250,7 +249,7 @@ public class CategoriaResourceTest extends ConfigurationResourceTests {
                 .body(gson.toJson(categoria))
                 .pathParam("id", ID_EXISTENTE)
         .when()
-                .put(URN_COM_ID)
+                .put(URI_COM_ID)
         .then()
                 .log().body().and()
                 .statusCode(HttpStatus.BAD_REQUEST.value())
@@ -270,7 +269,7 @@ public class CategoriaResourceTest extends ConfigurationResourceTests {
                 .body(gson.toJson(categoria))
                 .pathParam("id", ID_EXISTENTE)
         .when()
-                .put(URN_COM_ID)
+                .put(URI_COM_ID)
         .then()
                 .log().body().and()
                 .statusCode(HttpStatus.BAD_REQUEST.value())
@@ -289,7 +288,7 @@ public class CategoriaResourceTest extends ConfigurationResourceTests {
                 .body(gson.toJson(categoria))
                 .pathParam("id", ID_INEXISTENTE)
         .when()
-                .put(URN_COM_ID)
+                .put(URI_COM_ID)
         .then()
                 .log().body().and()
                 .statusCode(HttpStatus.NOT_FOUND.value())
@@ -303,7 +302,7 @@ public class CategoriaResourceTest extends ConfigurationResourceTests {
         given()
                 .pathParam("id", ID_CAT_SEM_PRODUTO)
         .when()
-                .delete(URN_COM_ID)
+                .delete(URI_COM_ID)
         .then()
                 .statusCode(HttpStatus.NO_CONTENT.value());
     }
@@ -313,7 +312,7 @@ public class CategoriaResourceTest extends ConfigurationResourceTests {
         given()
                 .pathParam("id", ID_EXISTENTE)
         .when()
-                .delete(URN_COM_ID)
+                .delete(URI_COM_ID)
         .then()
                 .log().body()
                 .statusCode(HttpStatus.BAD_REQUEST.value())
@@ -326,7 +325,7 @@ public class CategoriaResourceTest extends ConfigurationResourceTests {
         given()
                 .pathParam("id", ID_INEXISTENTE)
         .when()
-                .delete("/categorias/{id}")
+                .delete(URI_COM_ID)
         .then()
                 .log().body()
                 .statusCode(HttpStatus.NOT_FOUND.value())
@@ -337,7 +336,7 @@ public class CategoriaResourceTest extends ConfigurationResourceTests {
     /**Busca paginada */
     @Test
     public void deve_retornar_todas_as_categorias_paginada() {
-        get(URN)
+        get(URI)
         .then()
                 .log().body()
                 .statusCode(HttpStatus.OK.value())
@@ -350,7 +349,7 @@ public class CategoriaResourceTest extends ConfigurationResourceTests {
     public void deve_retornar_as_categorias_que_contem_as_letras_os_paginado() {
         given()
                 .param("nome", "os")
-        .get(URN)
+        .get(URI)
         .then()
                 .log().body()
                 .statusCode(HttpStatus.OK.value())
@@ -365,7 +364,7 @@ public class CategoriaResourceTest extends ConfigurationResourceTests {
                 .param("linesPerPage", 3)
                 .param("orderBy", "id")
                 .param("direction", "DESC")
-        .get(URN)
+        .get(URI)
         .then()
                 .log().body()
                 .statusCode(HttpStatus.OK.value())

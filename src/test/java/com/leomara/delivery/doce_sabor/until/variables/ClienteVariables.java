@@ -9,8 +9,8 @@ import java.util.List;
 
 public class ClienteVariables extends Variables {
     /** URN */
-    public static final String URN = "/clientes/";
-    public static final String URN_ID = URN +"{id}";
+    public static final String URI = "/api/clientes/";
+    public static final String URI_COM_ID = URI +"{id}";
 
     /** LISTA */
     public static List CPF_TODOS_CLIENTES = Arrays.asList("69811291322", "94202677331", "23179425679", "22088847448");
