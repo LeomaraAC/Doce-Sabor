@@ -1,9 +1,9 @@
 package com.leomara.delivery.doce_sabor.resources;
 
 import com.google.gson.Gson;
-import com.leomara.delivery.doce_sabor.dto.ClienteDTO;
+import com.leomara.delivery.doce_sabor.domain.Cliente;
+import com.leomara.delivery.doce_sabor.domain.Endereco;
 import com.leomara.delivery.doce_sabor.resources.config.ConfigurationResourceTests;
-import static com.leomara.delivery.doce_sabor.until.variables.ClienteVariables.*;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,35 +11,26 @@ import org.springframework.http.HttpStatus;
 
 import java.util.Arrays;
 
+import static com.leomara.delivery.doce_sabor.until.variables.ClienteVariables.*;
 import static io.restassured.RestAssured.get;
-import static org.hamcrest.Matchers.*;
-
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.*;
 
 
 public class ClienteResourceTest extends ConfigurationResourceTests {
 
 
-    private ClienteDTO cliente;
+    private Cliente cliente;
+    private Endereco endereco;
     private Gson gson;
 
     @BeforeEach
     void setUp() {
         gson = new Gson();
-        cliente = new ClienteDTO();
-
-        cliente.setNome(NOME);
-        cliente.setCpf(CPF);
-        cliente.setEmail(EMAIL);
-        cliente.setSenha(SENHA);
+        endereco = new Endereco(null, LOGRADOURO, NUMERO, BAIRRO, "", CEP, CIDADE, UF, null);
+        cliente = new Cliente(null, NOME, CPF, EMAIL, SENHA, endereco);
         cliente.getTelefones().addAll(Arrays.asList(TELEFONE));
-        cliente.setLogradouro(LOGRADOURO);
-        cliente.setBairro(BAIRRO);
-        cliente.setNumero(NUMERO);
-        cliente.setUf(UF);
-        cliente.setCep(CEP);
-        cliente.setCidade(CIDADE);
+//        endereco.setCliente(cliente);
     }
 
     /** Método insert */
@@ -89,18 +80,19 @@ public class ClienteResourceTest extends ConfigurationResourceTests {
     }
 
     @Test
-    public void deve_retornar_excecao_ao_salvar_cliente_sem_logradouro_e_outros_campos_do_endereco() {
-        ClienteDTO clienteAux = new ClienteDTO();
-        clienteAux.setNome(NOME);
-        clienteAux.setCpf(CPF);
-        clienteAux.setEmail(EMAIL);
-        clienteAux.setSenha(SENHA);
-        clienteAux.getTelefones().addAll(Arrays.asList(TELEFONE));
+    public void deve_retornar_excecao_ao_salvar_cliente_sem_logradouro_e_outros_campos_do_endereco_em_branco() {
+//        endereco.setBairro("");
+//        endereco.setCep("");
+//        endereco.setCidade("");
+//        endereco.setLogradouro("");
+//        endereco.setNumero("");
+//        endereco.setUf("");
+//        endereco.setComplemento("");
 
         given()
                 .request()
                 .contentType(ContentType.JSON)
-                .body(gson.toJson(clienteAux))
+                .body(gson.toJson(cliente))
         .when()
                 .post(URI)
         .then()

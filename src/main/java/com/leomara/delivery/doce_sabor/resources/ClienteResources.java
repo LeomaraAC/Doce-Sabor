@@ -1,7 +1,6 @@
 package com.leomara.delivery.doce_sabor.resources;
 
 import com.leomara.delivery.doce_sabor.domain.Cliente;
-import com.leomara.delivery.doce_sabor.dto.ClienteDTO;
 import com.leomara.delivery.doce_sabor.services.ClienteService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -53,8 +52,7 @@ public class ClienteResources {
             @ApiResponse(code = 400, message = "Erro de validação"),
     })
     @PostMapping(produces = "application/json", consumes = "application/json")
-    public ResponseEntity<Cliente> insert(@Valid @RequestBody ClienteDTO objDTO) {
-        Cliente cliente = service.fromDTO(objDTO);
+    public ResponseEntity<Cliente> insert(@Valid @RequestBody Cliente cliente) {
         cliente = service.insert(cliente);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(cliente.getId()).toUri();
         return ResponseEntity.created(uri).body(cliente);
@@ -67,8 +65,7 @@ public class ClienteResources {
             @ApiResponse(code = 404, message = "Cliente não encontrado"),
     })
     @PutMapping(value = "/{id}", produces = "application/json", consumes = "application/json")
-    public ResponseEntity<Cliente> update(@PathVariable Integer id, @Valid @RequestBody ClienteDTO objDTO) {
-        Cliente cliente = service.fromDTO(objDTO);
+    public ResponseEntity<Cliente> update(@PathVariable Integer id, @Valid @RequestBody Cliente cliente) {
         cliente.setId(id);
         cliente = service.update(cliente);
         return ResponseEntity.ok(cliente);

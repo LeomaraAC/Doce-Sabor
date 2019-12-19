@@ -2,11 +2,9 @@ package com.leomara.delivery.doce_sabor.services;
 
 import com.leomara.delivery.doce_sabor.domain.Categoria;
 import com.leomara.delivery.doce_sabor.domain.Produto;
-import com.leomara.delivery.doce_sabor.dto.CategoriaDTO;
 import com.leomara.delivery.doce_sabor.repositories.CategoriaRepository;
 import com.leomara.delivery.doce_sabor.services.exception.DataIntegrityException;
 import com.leomara.delivery.doce_sabor.services.exception.ObjectNotFoundException;
-import static com.leomara.delivery.doce_sabor.until.variables.CategoriaVariables.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +16,7 @@ import org.springframework.data.domain.PageImpl;
 import java.util.Arrays;
 import java.util.Optional;
 
+import static com.leomara.delivery.doce_sabor.until.variables.CategoriaVariables.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -177,16 +176,5 @@ public class CategoriaServiceTest {
                     () -> assertEquals(page.getContent().size(), catPage.getContent().size()),
                     () -> assertEquals(categoriaAux.getNome(), cat.getNome()),
                     () -> assertEquals(categoriaAux.getId(), cat.getId()));
-    }
-
-    /** Método fromDTO */
-    @Test
-    public void deve_retornar_uma_classe_categoria() {
-        CategoriaDTO objDTO = new CategoriaDTO(ID_EXISTENTE, NOME);
-        Categoria cat = sut.fromDTO(objDTO);
-
-        assertAll("Deve retornar um objeto Categoria",
-                    () -> assertEquals(cat.getId(), objDTO.getId()),
-                    () -> assertEquals(cat.getNome(),objDTO.getNome()));
     }
 }

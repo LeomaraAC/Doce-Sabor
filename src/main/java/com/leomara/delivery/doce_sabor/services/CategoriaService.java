@@ -1,7 +1,6 @@
 package com.leomara.delivery.doce_sabor.services;
 
 import com.leomara.delivery.doce_sabor.domain.Categoria;
-import com.leomara.delivery.doce_sabor.dto.CategoriaDTO;
 import com.leomara.delivery.doce_sabor.repositories.CategoriaRepository;
 import com.leomara.delivery.doce_sabor.services.exception.DataIntegrityException;
 import com.leomara.delivery.doce_sabor.services.exception.ObjectNotFoundException;
@@ -54,9 +53,5 @@ public class CategoriaService {
     public Page<Categoria> findPage(Integer page, Integer linesPerPage, String orderBy, String direction, String filterNome) {
         PageRequest request = PageRequest.of(page,linesPerPage, Sort.Direction.valueOf(direction), orderBy);
         return repo.filter(filterNome, request);
-    }
-
-    public Categoria fromDTO(CategoriaDTO obj) {
-        return new Categoria(obj.getId(), obj.getNome());
     }
 }

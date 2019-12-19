@@ -1,7 +1,6 @@
 package com.leomara.delivery.doce_sabor.resources;
 
 import com.leomara.delivery.doce_sabor.domain.Categoria;
-import com.leomara.delivery.doce_sabor.dto.CategoriaDTO;
 import com.leomara.delivery.doce_sabor.services.CategoriaService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -39,8 +38,7 @@ public class CategoriaResource {
             @ApiResponse(code = 400, message = "Erro de validação"),
     })
     @PostMapping(produces = "application/json", consumes = "application/json")
-    public ResponseEntity<Categoria> insert(@Valid @RequestBody CategoriaDTO obj) {
-        Categoria categoria = service.fromDTO(obj);
+    public ResponseEntity<Categoria> insert(@Valid @RequestBody Categoria categoria) {
         categoria = service.insert(categoria);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(categoria.getId()).toUri();
         return ResponseEntity.created(uri).body(categoria);
@@ -53,8 +51,7 @@ public class CategoriaResource {
             @ApiResponse(code = 404, message = "Categoria não encontrada"),
     })
     @PutMapping(value = "/{id}", produces = "application/json", consumes = "application/json")
-    public ResponseEntity<Categoria> update (@PathVariable Integer id, @Valid @RequestBody CategoriaDTO obj) {
-        Categoria categoria = service.fromDTO(obj);
+    public ResponseEntity<Categoria> update (@PathVariable Integer id, @Valid @RequestBody Categoria categoria) {
         categoria.setId(id);
         categoria = service.update(categoria);
         return ResponseEntity.ok(categoria);
@@ -76,13 +73,12 @@ public class CategoriaResource {
             @ApiResponse(code = 200, message = "Retorna a lista paginada de categorias")
     })
     @GetMapping(produces = "application/json")
-    public ResponseEntity<Page<CategoriaDTO>> findAll( @RequestParam(value = "nome", defaultValue = "") String nome,
+    public ResponseEntity<Page<Categoria>> findAll( @RequestParam(value = "nome", defaultValue = "") String nome,
                                                     @RequestParam(value = "page", defaultValue = "0") Integer page,
                                                     @RequestParam(value = "linesPerPage", defaultValue = "25") Integer linesPerPage,
                                                     @RequestParam(value = "orderBy", defaultValue = "nome") String orderBy,
                                                     @RequestParam(value = "direction", defaultValue = "ASC") String direction) {
         Page<Categoria> categorias = service.findPage(page,linesPerPage, orderBy, direction, nome);
-        Page<CategoriaDTO> listaDTO = categorias.map(obj -> new CategoriaDTO(obj.getId(), obj.getNome()));
-        return ResponseEntity.ok(listaDTO);
+        return ResponseEntity.ok(categorias);
     }
 }

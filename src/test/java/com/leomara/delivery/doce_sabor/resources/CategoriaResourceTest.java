@@ -2,7 +2,7 @@ package com.leomara.delivery.doce_sabor.resources;
 
 
 import com.google.gson.Gson;
-import com.leomara.delivery.doce_sabor.dto.CategoriaDTO;
+import com.leomara.delivery.doce_sabor.domain.Categoria;
 import com.leomara.delivery.doce_sabor.resources.config.ConfigurationResourceTests;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,13 +16,13 @@ import static org.hamcrest.Matchers.*;
 
 public class CategoriaResourceTest extends ConfigurationResourceTests {
 
-    private CategoriaDTO categoria;
+    private Categoria categoria;
     private Gson gson;
 
     @BeforeEach
     void setUp() {
         gson = new Gson();
-        categoria = new CategoriaDTO();
+        categoria = new Categoria();
         categoria.setNome(NOME);
     }
 
