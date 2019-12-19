@@ -55,18 +55,6 @@ public class ClienteService {
         return repo.save(cliente);
     }
 
-//    public Cliente fromDTO(ClienteDTO objDTO) {
-//        Endereco endereco = new Endereco(objDTO.getId(), objDTO.getLogradouro(),objDTO.getNumero(),objDTO.getBairro(),
-//                objDTO.getComplemento(), objDTO.getCep(), objDTO.getCidade(), objDTO.getUf(), null);
-//
-//        Cliente cliente = new Cliente(objDTO.getId(), objDTO.getNome(), objDTO.getCpf(), objDTO.getEmail(),
-//                objDTO.getSenha(), endereco);
-//        cliente.setTelefones(objDTO.getTelefones());
-//        endereco.setCliente(cliente);
-//
-//        return cliente;
-//    }
-
     public void delete(Integer id) {
         find(id);
         repo.deleteById(id);
