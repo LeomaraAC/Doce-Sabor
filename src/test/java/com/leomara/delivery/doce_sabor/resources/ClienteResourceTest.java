@@ -30,7 +30,6 @@ public class ClienteResourceTest extends ConfigurationResourceTests {
         endereco = new Endereco(null, LOGRADOURO, NUMERO, BAIRRO, "", CEP, CIDADE, UF, null);
         cliente = new Cliente(null, NOME, CPF, EMAIL, SENHA, endereco);
         cliente.getTelefones().addAll(Arrays.asList(TELEFONE));
-//        endereco.setCliente(cliente);
     }
 
     /** Método insert */
@@ -81,13 +80,13 @@ public class ClienteResourceTest extends ConfigurationResourceTests {
 
     @Test
     public void deve_retornar_excecao_ao_salvar_cliente_sem_logradouro_e_outros_campos_do_endereco_em_branco() {
-//        endereco.setBairro("");
-//        endereco.setCep("");
-//        endereco.setCidade("");
-//        endereco.setLogradouro("");
-//        endereco.setNumero("");
-//        endereco.setUf("");
-//        endereco.setComplemento("");
+        endereco.setBairro("");
+        endereco.setCep("");
+        endereco.setCidade("");
+        endereco.setLogradouro("");
+        endereco.setNumero("");
+        endereco.setUf("");
+        endereco.setComplemento("");
 
         given()
                 .request()
@@ -101,8 +100,8 @@ public class ClienteResourceTest extends ConfigurationResourceTests {
                 .statusCode(HttpStatus.BAD_REQUEST.value())
                 .body("status", equalTo(HttpStatus.BAD_REQUEST.value()),
                         "message", equalTo(ERRO_VALIDACAO_DADOS),
-                        "errors.field", containsInAnyOrder("logradouro", "numero", "bairro",
-                                "cep", "cidade", "uf"));
+                        "errors.field", hasItems("endereco.logradouro", "endereco.numero",
+                                "endereco.bairro", "endereco.cep", "endereco.cidade", "endereco.uf"));
     }
 
     @Test

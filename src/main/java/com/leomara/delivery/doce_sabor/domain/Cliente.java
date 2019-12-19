@@ -5,6 +5,7 @@ import lombok.*;
 import org.hibernate.validator.constraints.br.CPF;
 
 import javax.persistence.*;
+import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -43,6 +44,7 @@ public class Cliente {
     @Size(min = 1, message = "É obrigatório informar pelo menos um telefone.")
     private Set<String> telefones = new HashSet<>();
 
+    @Valid
     @OneToOne(mappedBy = "cliente", cascade = CascadeType.ALL)
     private Endereco endereco;
 

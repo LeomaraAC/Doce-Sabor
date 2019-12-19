@@ -1,6 +1,7 @@
 package com.leomara.delivery.doce_sabor.resources;
 
 import com.leomara.delivery.doce_sabor.domain.Cliente;
+import com.leomara.delivery.doce_sabor.domain.Endereco;
 import com.leomara.delivery.doce_sabor.services.ClienteService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -53,6 +54,8 @@ public class ClienteResources {
     })
     @PostMapping(produces = "application/json", consumes = "application/json")
     public ResponseEntity<Cliente> insert(@Valid @RequestBody Cliente cliente) {
+        Endereco endereco = cliente.getEndereco();
+        endereco.setCliente(cliente);
         cliente = service.insert(cliente);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(cliente.getId()).toUri();
         return ResponseEntity.created(uri).body(cliente);
@@ -67,6 +70,9 @@ public class ClienteResources {
     @PutMapping(value = "/{id}", produces = "application/json", consumes = "application/json")
     public ResponseEntity<Cliente> update(@PathVariable Integer id, @Valid @RequestBody Cliente cliente) {
         cliente.setId(id);
+        Endereco endereco = cliente.getEndereco();
+        endereco.setId(cliente.getId());
+        endereco.setCliente(cliente);
         cliente = service.update(cliente);
         return ResponseEntity.ok(cliente);
     }
