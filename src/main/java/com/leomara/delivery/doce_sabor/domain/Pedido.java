@@ -1,5 +1,6 @@
 package com.leomara.delivery.doce_sabor.domain;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,10 +18,15 @@ import java.util.List;
 @EqualsAndHashCode(of = "id")
 public class Pedido {
 
+    @ApiModelProperty(value = "ID do pedido")
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
+    @ApiModelProperty(value = "Data que o pedido foi realizado")
     private Date data;
+
+    @ApiModelProperty(value = "Desconto do pedido")
     private Double desconto;
 
     @ManyToOne

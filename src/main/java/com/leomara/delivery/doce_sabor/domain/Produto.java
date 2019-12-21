@@ -1,6 +1,7 @@
 package com.leomara.delivery.doce_sabor.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,10 +18,15 @@ import java.util.List;
 @EqualsAndHashCode(of = "id")
 public class Produto {
 
+    @ApiModelProperty(value = "ID do produto")
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
+    @ApiModelProperty(value = "Nome do produto")
     private String nome;
+
+    @ApiModelProperty(value = "Preço do produto")
     private Double valor;
 
     @JsonIgnore
