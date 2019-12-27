@@ -13,13 +13,14 @@ public class EmpresaService {
     EmpresaRepository repo;
 
     public Empresa insert(Empresa empresa) {
+        empresa.setId(null);
         if (repo.findByNomeFantasia(empresa.getNome_fantasia()).isPresent())
             throw new DataIntegrityException("O nome fantasia "+empresa.getNome_fantasia()+" já esta cadastrado.");
 
         if (repo.findByEmail(empresa.getEmail()).isPresent())
             throw new DataIntegrityException("O email "+empresa.getEmail()+" já esta cadastrado.");
 
-        if (repo.findByCNPJ(empresa.getCnpj()).isPresent())
+        if (repo.findByCnpj(empresa.getCnpj()).isPresent())
             throw new DataIntegrityException("O CNPJ "+empresa.getCnpj()+" já esta cadastrado.");
 
         return repo.save(empresa);
