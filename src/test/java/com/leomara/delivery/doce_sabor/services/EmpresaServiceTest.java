@@ -33,7 +33,7 @@ public class EmpresaServiceTest {
         when(repo.save(empresa)).thenReturn(empresa);
         when(repo.findByNomeFantasia(NOME_FANTASIA_EXISTENTE)).thenReturn(Optional.of(empresa));
         when(repo.findByEmail(EMAIL_EXISTENTE)).thenReturn(Optional.of(empresa));
-        when(repo.findByCNPJ(CNPJ_EXISTENTE)).thenReturn(Optional.of(empresa));
+        when(repo.findByCnpj(CNPJ_EXISTENTE)).thenReturn(Optional.of(empresa));
     }
 
     @Test
