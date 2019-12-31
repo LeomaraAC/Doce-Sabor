@@ -24,6 +24,7 @@ public class EmpresaResourceTest extends ConfigurationResourceTests {
         empresa = new Empresa(null, NOME_FANTASIA, CNPJ, EMAIL, SENHA);
     }
 
+    /** Inserir */
     @Test
     public void deve_salvar_uma_empresa_om_sucesso() {
         given()
@@ -160,5 +161,32 @@ public class EmpresaResourceTest extends ConfigurationResourceTests {
                         "errors.field", hasItems("email", "cnpj", "nome_fantasia", "senha"),
                         "errors.message", hasItems(ERRO_PREENCHIMENTO_OBRIGATORIO));
     }
+
+    /**
+    /** Deletar */
+    @Test
+    public void deve_retornar_excessao_ao_tenta_apagar_empresa_com_id_inexistente() {
+        given()
+                .pathParam("id", ID_INEXISTENTE)
+        .when()
+                .delete(URN_COM_ID)
+        .then()
+                .log().body().and()
+                .statusCode(HttpStatus.NOT_FOUND.value())
+                .body("status", equalTo(HttpStatus.NOT_FOUND.value()),
+                        "message", equalTo(MSG_ERRO_EMPRESA_NAO_ENCONTRADA));
+    }
+
+    @Test
+    public void deve_apagar_uma_empresa_com_sucesso() {
+        given()
+                .pathParam("id", ID_EXISTENTE)
+        .when()
+                .delete(URN_COM_ID)
+        .then()
+                .statusCode(HttpStatus.NO_CONTENT.value());
+    }
+
+
 }
 

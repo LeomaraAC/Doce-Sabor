@@ -4,6 +4,7 @@ public class EmpresaVariables {
 
     /** URN */
     public static final String URN = "/api/empresas/";
+    public static final String URN_COM_ID = URN + "{id}";
 
     /** ID */
     public static final Integer ID_INEXISTENTE = 10;
