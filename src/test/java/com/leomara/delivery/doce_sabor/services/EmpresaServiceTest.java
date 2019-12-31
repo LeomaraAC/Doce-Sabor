@@ -35,7 +35,7 @@ public class EmpresaServiceTest {
         when(repo.findByNomeFantasia(NOME_FANTASIA_EXISTENTE)).thenReturn(Optional.of(empresa));
         when(repo.findByEmail(EMAIL_EXISTENTE)).thenReturn(Optional.of(empresa));
         when(repo.findByCnpj(CNPJ_EXISTENTE)).thenReturn(Optional.of(empresa));
-        when(repo.findById(ID_NOVO_EXISTENTE)).thenReturn(Optional.of(empresa));
+        when(repo.findById(ID_EXISTENTE)).thenReturn(Optional.of(empresa));
     }
 
     /** Inserindo */
@@ -79,7 +79,7 @@ public class EmpresaServiceTest {
 
     @Test
     public void deve_apagar_uma_empresa_com_sucesso() {
-        sut.delete(ID_NOVO_EXISTENTE);
-        verify(repo).deleteById(ID_NOVO_EXISTENTE);
+        sut.delete(ID_EXISTENTE);
+        verify(repo).deleteById(ID_EXISTENTE);
     }
 }

@@ -89,7 +89,7 @@ public class EmpresaResourceTest extends ConfigurationResourceTests {
 
     @Test
     public void deve_salvar_ao_inves_de_atualizar_ao_receber_empresa_com_id_existente() {
-        empresa.setId(ID_NOVO_EXISTENTE);
+        empresa.setId(ID_EXISTENTE);
         given()
                 .request()
                 .contentType(ContentType.JSON)

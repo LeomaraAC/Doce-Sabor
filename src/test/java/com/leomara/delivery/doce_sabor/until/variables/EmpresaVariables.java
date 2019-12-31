@@ -8,7 +8,7 @@ public class EmpresaVariables {
     /** ID */
     public static final Integer ID_INEXISTENTE = 10;
     public static final Integer ID_NOVO = 4;
-    public static final Integer ID_NOVO_EXISTENTE = 3;
+    public static final Integer ID_EXISTENTE = 3;
 
     /** NOME FANTASIA */
     public static final String NOME_FANTASIA = "RedRock";
