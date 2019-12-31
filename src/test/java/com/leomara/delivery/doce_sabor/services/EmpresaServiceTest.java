@@ -3,6 +3,7 @@ package com.leomara.delivery.doce_sabor.services;
 import com.leomara.delivery.doce_sabor.domain.Empresa;
 import com.leomara.delivery.doce_sabor.repositories.EmpresaRepository;
 import com.leomara.delivery.doce_sabor.services.exception.DataIntegrityException;
+import com.leomara.delivery.doce_sabor.services.exception.ObjectNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,8 +35,10 @@ public class EmpresaServiceTest {
         when(repo.findByNomeFantasia(NOME_FANTASIA_EXISTENTE)).thenReturn(Optional.of(empresa));
         when(repo.findByEmail(EMAIL_EXISTENTE)).thenReturn(Optional.of(empresa));
         when(repo.findByCnpj(CNPJ_EXISTENTE)).thenReturn(Optional.of(empresa));
+        when(repo.findById(ID_NOVO_EXISTENTE)).thenReturn(Optional.of(empresa));
     }
 
+    /** Inserindo */
     @Test
     public void deve_inserir_uma_empresa_com_sucesso() {
         Empresa emp = sut.insert(empresa);
@@ -65,5 +68,18 @@ public class EmpresaServiceTest {
         empresa.setCnpj(CNPJ_EXISTENTE);
         exception = assertThrows(DataIntegrityException.class, () -> sut.insert(empresa));
         assertEquals(MSG_ERRO_DUPLICIDADE_CNPJ, exception.getMessage());
+    }
+
+    /**Apagar */
+    @Test
+    public void deve_retornar_excessao_ao_apagar_com_id_inexistente() {
+        exception = assertThrows(ObjectNotFoundException.class, () -> sut.delete(ID_INEXISTENTE));
+        assertEquals(MSG_ERRO_EMPRESA_NAO_ENCONTRADA, exception.getMessage());
+    }
+
+    @Test
+    public void deve_apagar_uma_empresa_com_sucesso() {
+        sut.delete(ID_NOVO_EXISTENTE);
+        verify(repo).deleteById(ID_NOVO_EXISTENTE);
     }
 }

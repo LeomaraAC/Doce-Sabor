@@ -3,6 +3,7 @@ package com.leomara.delivery.doce_sabor.services;
 import com.leomara.delivery.doce_sabor.domain.Empresa;
 import com.leomara.delivery.doce_sabor.repositories.EmpresaRepository;
 import com.leomara.delivery.doce_sabor.services.exception.DataIntegrityException;
+import com.leomara.delivery.doce_sabor.services.exception.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,5 +25,11 @@ public class EmpresaService {
             throw new DataIntegrityException("O CNPJ "+empresa.getCnpj()+" já esta cadastrado.");
 
         return repo.save(empresa);
+    }
+
+    public void delete(Integer id) {
+        if (!repo.findById(id).isPresent())
+            throw new ObjectNotFoundException("Empresa não encontrada. ID: " + id);
+        repo.deleteById(id);
     }
 }

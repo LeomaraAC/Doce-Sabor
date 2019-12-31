@@ -6,6 +6,7 @@ public class EmpresaVariables {
     public static final String URN = "/api/empresas/";
 
     /** ID */
+    public static final Integer ID_INEXISTENTE = 10;
     public static final Integer ID_NOVO = 4;
     public static final Integer ID_NOVO_EXISTENTE = 3;
 
@@ -32,4 +33,5 @@ public class EmpresaVariables {
     public static final String MSG_ERRO_DUPLICIDADE_CNPJ = "O CNPJ "+CNPJ_EXISTENTE+" já esta cadastrado.";
     public static final String MSG_ERRO_CNPJ_INVALIDO = "O CNPJ é inválido.";
     public static final String MSG_ERRO_EMAIL_INVALIDO = "O email é inválido.";
+    public static final String MSG_ERRO_EMPRESA_NAO_ENCONTRADA = "Empresa não encontrada. ID: " + ID_INEXISTENTE;
 }
