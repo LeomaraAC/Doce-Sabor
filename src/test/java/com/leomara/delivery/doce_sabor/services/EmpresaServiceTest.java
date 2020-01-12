@@ -12,6 +12,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.Optional;
 
+import static com.leomara.delivery.doce_sabor.until.Variables.ERRO_ID_NECESSARIO;
 import static com.leomara.delivery.doce_sabor.until.variables.EmpresaVariables.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
@@ -41,6 +42,7 @@ public class EmpresaServiceTest {
         when(repo.findById(ID_EXISTENTE)).thenReturn(Optional.of(empresa));
         when(repo.findById(ID_NOVO)).thenReturn(Optional.of(empresa));
         when(repo.findById(ID_INEXISTENTE)).thenReturn(Optional.empty());
+        when(repo.findById(null)).thenThrow(IllegalArgumentException.class);
     }
 
     /** Inserindo */
@@ -133,5 +135,25 @@ public class EmpresaServiceTest {
         empresaAux = sut.update(empresa);
         verify(repo).save(empresa);
         assertTrue(empresaAux.equals(empresa));
+    }
+
+    /** buscando por id */
+    @Test
+    public void deve_retornar_excessao_ao_buscar_com_id_nulo() {
+        exception = assertThrows(DataIntegrityException.class, () -> sut.find(null));
+        assertEquals(ERRO_ID_NECESSARIO, exception.getMessage());
+    }
+
+    @Test
+    public void deve_retornar_excessao_ao_buscar_empresa_com_id_inexistente() {
+        exception = assertThrows(ObjectNotFoundException.class, () -> sut.find(ID_INEXISTENTE));
+        assertEquals(MSG_ERRO_EMPRESA_NAO_ENCONTRADA, exception.getMessage());
+    }
+
+    @Test
+    public void deve_buscar_empresa_de_id_3_com_sucesso() {
+        empresaAux = sut.find(ID_EXISTENTE);
+        verify(repo).findById(ID_EXISTENTE);
+        assertEquals(NOME_FANTASIA, empresaAux.getNome_fantasia());
     }
 }

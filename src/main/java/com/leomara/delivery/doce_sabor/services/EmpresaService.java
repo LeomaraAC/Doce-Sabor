@@ -35,6 +35,8 @@ public class EmpresaService {
     }
 
     public Empresa find(Integer id) {
+        if (id == null)
+            throw new DataIntegrityException("Necessário um id para buscar.");
         Optional<Empresa> empresa = repo.findById(id);
         return empresa.orElseThrow(() -> new ObjectNotFoundException("Empresa não encontrada. ID: " + id));
     }
