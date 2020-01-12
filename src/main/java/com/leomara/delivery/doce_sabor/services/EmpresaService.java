@@ -7,6 +7,8 @@ import com.leomara.delivery.doce_sabor.services.exception.ObjectNotFoundExceptio
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class EmpresaService {
 
@@ -28,8 +30,29 @@ public class EmpresaService {
     }
 
     public void delete(Integer id) {
-        if (!repo.findById(id).isPresent())
-            throw new ObjectNotFoundException("Empresa não encontrada. ID: " + id);
+        find(id);
         repo.deleteById(id);
+    }
+
+    public Empresa find(Integer id) {
+        Optional<Empresa> empresa = repo.findById(id);
+        return empresa.orElseThrow(() -> new ObjectNotFoundException("Empresa não encontrada. ID: " + id));
+    }
+
+    public Empresa update(Empresa empresa) {
+        find(empresa.getId());
+        validarUpdate(repo.findByNomeFantasia(empresa.getNome_fantasia()), empresa,
+                "O nome fantasia "+empresa.getNome_fantasia()+" já esta cadastrado.");
+
+        validarUpdate(repo.findByCnpj(empresa.getCnpj()), empresa, "O CNPJ "+empresa.getCnpj()+" já esta cadastrado.");
+
+        validarUpdate(repo.findByEmail(empresa.getEmail()), empresa, "O email "+empresa.getEmail()+" já esta cadastrado.");
+        return repo.save(empresa);
+    }
+
+    private void validarUpdate(Optional<Empresa> obj, Empresa empresa, String msg) {
+        if (obj.isPresent())
+            if (!obj.get().equals(empresa))
+                throw new DataIntegrityException(msg);
     }
 }

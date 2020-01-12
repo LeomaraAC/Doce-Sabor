@@ -26,16 +26,21 @@ public class EmpresaServiceTest {
     private EmpresaRepository repo;
 
     private Empresa empresa;
+    private Empresa empresaAux;
     private Exception exception;
 
     @BeforeEach
     void setUp() {
-        empresa = new Empresa(null, NOME_FANTASIA, CNPJ, EMAIL, SENHA);
+        empresa = new Empresa(ID_NOVO, NOME_FANTASIA, CNPJ, EMAIL, SENHA);
+        empresaAux = new Empresa(ID_EXISTENTE, NOME_FANTASIA, CNPJ_EXISTENTE, EMAIL_EXISTENTE, SENHA);
+
         when(repo.save(empresa)).thenReturn(empresa);
         when(repo.findByNomeFantasia(NOME_FANTASIA_EXISTENTE)).thenReturn(Optional.of(empresa));
         when(repo.findByEmail(EMAIL_EXISTENTE)).thenReturn(Optional.of(empresa));
         when(repo.findByCnpj(CNPJ_EXISTENTE)).thenReturn(Optional.of(empresa));
         when(repo.findById(ID_EXISTENTE)).thenReturn(Optional.of(empresa));
+        when(repo.findById(ID_NOVO)).thenReturn(Optional.of(empresa));
+        when(repo.findById(ID_INEXISTENTE)).thenReturn(Optional.empty());
     }
 
     /** Inserindo */
@@ -81,5 +86,52 @@ public class EmpresaServiceTest {
     public void deve_apagar_uma_empresa_com_sucesso() {
         sut.delete(ID_EXISTENTE);
         verify(repo).deleteById(ID_EXISTENTE);
+    }
+
+    /** Atualizar */
+    @Test
+    public void deve_retornar_excessao_ao_atualizar_empresa_com_nome_fantasia_ja_existente () {
+        when(repo.findByNomeFantasia(NOME_FANTASIA_EXISTENTE)).thenReturn(Optional.of(empresaAux));
+
+        empresa.setNome_fantasia(NOME_FANTASIA_EXISTENTE);
+
+        exception = assertThrows(DataIntegrityException.class, () -> sut.update(empresa));
+        assertEquals(MSG_ERRO_DUPLICIDADE_NOME_FANTASIA, exception.getMessage());
+    }
+
+    @Test
+    public void deve_retornar_excessao_ao_atualizar_empresa_com_id_inexistente() {
+        empresa.setId(ID_INEXISTENTE);
+
+        exception = assertThrows(ObjectNotFoundException.class, () -> sut.update(empresa));
+        assertEquals(MSG_ERRO_EMPRESA_NAO_ENCONTRADA, exception.getMessage());
+    }
+
+    @Test
+    public void deve_retornar_excessao_ao_atualizar_empresa_com_CNPJ_ja_existente() {
+        when(repo.findByCnpj(CNPJ_EXISTENTE)).thenReturn(Optional.of(empresaAux));
+
+        empresa.setCnpj(CNPJ_EXISTENTE);
+
+        exception = assertThrows(DataIntegrityException.class, () -> sut.update(empresa));
+        assertEquals(MSG_ERRO_DUPLICIDADE_CNPJ, exception.getMessage());
+
+    }
+
+    @Test
+    public void deve_retornar_excessao_ao_atualizar_empresa_com_email_ja_existente() {
+        when(repo.findByEmail(EMAIL_EXISTENTE)).thenReturn(Optional.of(empresaAux));
+
+        empresa.setEmail(EMAIL_EXISTENTE);
+
+        exception = assertThrows(DataIntegrityException.class, () -> sut.update(empresa));
+        assertEquals(MSG_ERRO_DUPLICIDADE_EMAIL, exception.getMessage());
+    }
+
+    @Test
+    public void deve_atualizar_empresa_com_sucesso() {
+        empresaAux = sut.update(empresa);
+        verify(repo).save(empresa);
+        assertTrue(empresaAux.equals(empresa));
     }
 }
