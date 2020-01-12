@@ -33,9 +33,11 @@ public class CategoriaService {
 
     }
 
-    public Categoria find(int catId) {
-        Optional<Categoria> obj = repo.findById(catId);
-        return obj.orElseThrow(() -> new ObjectNotFoundException("Categoria não encontrada. ID: " + catId));
+    public Categoria find(Integer id) {
+        if (id == null)
+            throw new DataIntegrityException("Necessário um id para buscar.");
+        Optional<Categoria> obj = repo.findById(id);
+        return obj.orElseThrow(() -> new ObjectNotFoundException("Categoria não encontrada. ID: " + id));
     }
 
     public Categoria update(Categoria categoria) {

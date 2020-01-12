@@ -56,6 +56,7 @@ public class CategoriaServiceTest {
         when(repository.findById(ID_EXISTENTE)).thenReturn(Optional.of(categoria));
         when(repository.save(categoria)).thenReturn(categoriaAux);
         when(repository.filter(" ", PAGE_REQUEST)).thenReturn(page);
+        when(repository.findById(null)).thenThrow(IllegalArgumentException.class);
     }
 
     /** Método Insert*/
@@ -124,6 +125,12 @@ public class CategoriaServiceTest {
         when(repository.findById(ID_INEXISTENTE)).thenReturn(Optional.empty());
         exception = assertThrows(ObjectNotFoundException.class, () -> sut.find(ID_INEXISTENTE));
         assertEquals(ERRO_CAT_NAO_ENCONTRADA, exception.getMessage());
+    }
+
+    @Test
+    public void deve_retornar_excecao_ao_buscar_com_id_nulo() {
+        exception = assertThrows(DataIntegrityException.class, () -> sut.find(null));
+        assertEquals(ERRO_ID_NECESSARIO, exception.getMessage());
     }
 
     /** Método update*/
