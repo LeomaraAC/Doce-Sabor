@@ -31,6 +31,19 @@ public class EmpresaResource {
         return ResponseEntity.created(uri).body(empresa);
     }
 
+    @ApiOperation(value = "Ataualiza uma empresa")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Empresa atualizada"),
+            @ApiResponse(code = 400, message = "Erro de validação"),
+            @ApiResponse(code = 404, message = "Empresa não encontrada")
+    })
+    @PutMapping(value = "/{id}", produces = "application/json", consumes = "application/json")
+    public ResponseEntity<Empresa> update(@PathVariable Integer id, @Valid @RequestBody Empresa empresa) {
+        empresa.setId(id);
+        empresa = service.update(empresa);
+        return ResponseEntity.ok(empresa);
+    }
+
     @ApiOperation(value = "Exclui uma empresa")
     @ApiResponses(value = {
             @ApiResponse(code = 204, message = "Empresa excluida"),
